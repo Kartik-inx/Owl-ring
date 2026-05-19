@@ -11,6 +11,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -55,27 +56,37 @@ const Navbar = () => {
         )}
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-full bg-gold-gradient flex items-center justify-center overflow-hidden">
-            <span className="text-black font-bold text-xs">O</span>
+        <Link href="/" className="flex items-center group select-none">
+          <div className="relative h-6 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+            <img 
+              src="/images/logo.png" 
+              alt="Owl Brand Logo" 
+              className="h-full object-contain"
+            />
           </div>
-          <span className="text-xl font-heading font-bold tracking-tighter text-white group-hover:text-accent transition-colors">
-            OWL <span className="text-accent">RING</span>
-          </span>
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+        <div className="hidden md:flex items-center gap-6">
+          {navLinks.map((link, idx) => (
             <Link
               key={link.name}
               href={link.href}
+              onMouseEnter={() => setHoveredIndex(idx)}
+              onMouseLeave={() => setHoveredIndex(null)}
               className={cn(
-                "text-sm font-medium transition-colors",
+                "relative px-4 py-2 text-sm font-medium transition-colors rounded-full text-shadow-cinematic select-none",
                 pathname === link.href ? "text-accent" : "text-muted hover:text-white"
               )}
             >
-              {link.name}
+              {hoveredIndex === idx && (
+                <motion.span
+                  layoutId="navHoverBackdrop"
+                  className="absolute inset-0 bg-white/5 rounded-full z-0"
+                  transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                />
+              )}
+              <span className="relative z-10">{link.name}</span>
             </Link>
           ))}
         </div>

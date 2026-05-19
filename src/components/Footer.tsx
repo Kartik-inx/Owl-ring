@@ -28,11 +28,14 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-20">
           <div className="col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-6 group">
-              <div className="w-8 h-8 rounded-full bg-gold-gradient flex items-center justify-center">
-                <span className="text-black font-bold text-xs">O</span>
+            <Link href="/" className="flex items-center mb-6 group select-none">
+              <div className="relative h-6 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+                <img 
+                  src="/images/logo.png" 
+                  alt="Owl Brand Logo" 
+                  className="h-full object-contain"
+                />
               </div>
-              <span className="text-xl font-heading font-bold tracking-tighter">OWL RING</span>
             </Link>
             <p className="text-muted text-sm max-w-xs mb-8 leading-relaxed">
               Advancing human potential through elegant, invisible technology. 
