@@ -254,6 +254,7 @@ export default function CinematicLanding() {
     const height = window.innerHeight;
 
     const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x000000, 0.08);
 
     // Telephoto macro camera setup to eliminate perspective distortion and compression (15 deg FOV)
     const camera = new THREE.PerspectiveCamera(15, width / height, 0.1, 100);
@@ -433,12 +434,17 @@ export default function CinematicLanding() {
       color: colors[0].materialColor, 
       metalness: colors[0].metalness,
       roughness: colors[0].roughness,
-      clearcoat: 0.3,
-      clearcoatRoughness: 0.1,
-      envMapIntensity: 2.5,
+      clearcoat: 0.38,
+      clearcoatRoughness: 0.16,
+      envMapIntensity: 2.8,
       bumpMap: brushedTex,
-      bumpScale: 0.0006,
+      bumpScale: 0.0004,
       roughnessMap: brushedTex,
+      iridescence: 0.08,
+      iridescenceIOR: 1.3,
+      iridescenceThicknessRange: [100, 400],
+      sheen: 0.25,
+      sheenRoughness: 0.15,
       side: THREE.DoubleSide,
       transparent: true,
       opacity: 1.0,
@@ -779,6 +785,18 @@ export default function CinematicLanding() {
     scene.add(shadowMesh);
 
     // --- TWO-LAYER ATMOSPHERIC PARTICLES ---
+    const pCanvas = document.createElement("canvas");
+    pCanvas.width = 16;
+    pCanvas.height = 16;
+    const pCtx = pCanvas.getContext("2d");
+    if (pCtx) {
+      const grad = pCtx.createRadialGradient(8, 8, 0, 8, 8, 8);
+      grad.addColorStop(0, "rgba(255, 255, 255, 1)");
+      grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+      pCtx.fillStyle = grad;
+      pCtx.fillRect(0, 0, 16, 16);
+    }
+    const teleTex = new THREE.CanvasTexture(pCanvas);
 
     // Layer 1: Distant slow-drifting dust motes
     const dustCount = 150;
@@ -794,10 +812,11 @@ export default function CinematicLanding() {
     dustGeom.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
     
     const dustMat = new THREE.PointsMaterial({
-      size: 0.06,
+      size: 0.09,
       color: 0xcccccc,
       transparent: true,
-      opacity: 0.12,
+      opacity: 0.16,
+      map: teleTex,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
     });
@@ -825,19 +844,6 @@ export default function CinematicLanding() {
     }
     const teleGeom = new THREE.BufferGeometry();
     teleGeom.setAttribute("position", new THREE.BufferAttribute(telePositions, 3));
-
-    const pCanvas = document.createElement("canvas");
-    pCanvas.width = 16;
-    pCanvas.height = 16;
-    const pCtx = pCanvas.getContext("2d");
-    if (pCtx) {
-      const grad = pCtx.createRadialGradient(8, 8, 0, 8, 8, 8);
-      grad.addColorStop(0, "rgba(255, 255, 255, 1)");
-      grad.addColorStop(1, "rgba(255, 255, 255, 0)");
-      pCtx.fillStyle = grad;
-      pCtx.fillRect(0, 0, 16, 16);
-    }
-    const teleTex = new THREE.CanvasTexture(pCanvas);
     
     const teleMat = new THREE.PointsMaterial({
       size: 0.038,
@@ -944,6 +950,7 @@ export default function CinematicLanding() {
       cameraX: 0,
       cameraY: 0,
       cameraZ: 10.0,
+      cameraFOV: 15.0,
 
       colorR: colors[0].materialColor >> 16 & 255,
       colorG: colors[0].materialColor >> 8 & 255,
@@ -995,8 +1002,10 @@ export default function CinematicLanding() {
     tl.to(animState, {
       ringRotationY: Math.PI * 0.8,
       ringRotationX: 0.22,
-      ringScale: 0.52,
+      ringScale: 0.50,
       ringPositionX: 0,
+      ringPositionY: -0.82,
+      cameraFOV: 14.5,
       shellSplit: 0,
       gasketExpand: 0,
       pcbExpand: 0,
@@ -1019,6 +1028,8 @@ export default function CinematicLanding() {
       ringRotationY: Math.PI * 2.3,
       ringScale: 0.48,
       ringPositionX: 0,
+      ringPositionY: 0,
+      cameraFOV: 16.0,
       duration: 2.0,
       ease: "power2.inOut"
     }, 2.0);
@@ -1038,10 +1049,12 @@ export default function CinematicLanding() {
       sensorGlow: 0,
       batteryRotate: 0,
       coilExpand: 0,
-      ringPositionX: 1.7,
-      ringScale: 0.45,
+      ringPositionX: 1.6,
+      ringPositionY: 0,
+      ringScale: 0.44,
       ringRotationX: 0.22,
       ringRotationY: Math.PI * 3.8,
+      cameraFOV: 15.0,
       duration: 2.0,
       ease: "power2.inOut"
     }, 4.0);
@@ -1051,9 +1064,11 @@ export default function CinematicLanding() {
     // SECTION 4: Material Showcase (6.0 -> 8.0)
     tl.to(animState, {
       ringPositionX: 0,
-      ringScale: 0.85,
+      ringPositionY: -0.35,
+      ringScale: 0.78,
       ringRotationX: 0.38,
       ringRotationY: Math.PI * 5.2,
+      cameraFOV: 11.5,
       duration: 2.0,
       ease: "power2.inOut"
     }, 6.0);
@@ -1063,10 +1078,13 @@ export default function CinematicLanding() {
     // SECTION 5: Performance Story (8.0 -> 10.0)
     tl.to(animState, {
       ringScale: 0.52,
+      ringPositionX: 0,
+      ringPositionY: 0.75,
       batteryRotate: 1.0,
       coilExpand: 1.0,
       ringRotationX: 0.42,
       ringRotationY: Math.PI * 6.8,
+      cameraFOV: 15.5,
       duration: 2.0,
       ease: "power2.inOut"
     }, 8.0);
@@ -1082,10 +1100,12 @@ export default function CinematicLanding() {
       sensorGlow: 0,
       batteryRotate: 0,
       coilExpand: 0,
-      ringScale: 0.55,
+      ringScale: 0.54,
       ringPositionX: 0,
+      ringPositionY: -0.55,
       ringRotationX: 0.32,
       ringRotationY: Math.PI * 8.0,
+      cameraFOV: 14.5,
       duration: 2.0,
       ease: "power2.inOut"
     }, 10.0);
@@ -1184,6 +1204,10 @@ export default function CinematicLanding() {
       camera.position.x = animState.cameraX + driftX;
       camera.position.y = animState.cameraY + driftY;
       camera.position.z = animState.cameraZ;
+
+      // Dynamic camera telephoto lens zoom compression (Macro DOF)
+      camera.fov = THREE.MathUtils.lerp(camera.fov, animState.cameraFOV, 0.05);
+      camera.updateProjectionMatrix();
 
       // Ground shadow sizing and diffusion mapping
       if (shadowMesh) {
@@ -1492,46 +1516,46 @@ export default function CinematicLanding() {
         <div className="absolute inset-0 w-full h-full pointer-events-none z-30 flex items-center justify-center">
           
           {/* Chapter 1: Hero Intro */}
-          <div ref={introTextRef} className={`absolute text-center flex flex-col items-center gap-5 pointer-events-none transition-all duration-700 ${
-            currentChapter === 1 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-12"
+          <div ref={introTextRef} className={`absolute top-[9%] text-center flex flex-col items-center gap-5 pointer-events-none transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            currentChapter === 1 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
           }`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-lg">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-lg transition-all duration-[1000ms] delay-75 shadow-lg">
               <Sparkles size={11} className="text-accent animate-pulse" />
               <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-accent">PRE-PRODUCTION PREVIEW</span>
             </div>
             
-            <h1 className="text-6xl md:text-9xl font-bold tracking-tighter uppercase leading-none mt-2 font-heading">
-              OWL <span className="text-gradient-gold">RING.</span>
+            <h1 className="text-6xl md:text-9xl font-bold tracking-tighter uppercase leading-none mt-2 font-heading text-shadow-cinematic transition-all duration-[1200ms] delay-150 ease-out">
+              OWL <span className="text-[#c6a972]">RING.</span>
             </h1>
-            <p className="text-muted/80 text-xs md:text-sm max-w-sm tracking-widest mt-3 font-body leading-relaxed font-light uppercase">
+            <p className="text-neutral-200 text-xs md:text-sm max-w-2xl tracking-[0.18em] mt-3 font-body leading-relaxed font-light uppercase text-shadow-cinematic transition-all duration-[1200ms] delay-300">
               Stealth DLC Titanium • Triple PPG Diagnostics • 7-Day Battery
             </p>
           </div>
 
           {/* Chapter 2: Exploded Engineering view */}
-          <div ref={explodeTextRef} className={`absolute text-center flex flex-col items-center gap-3 pointer-events-none transition-all duration-700 ${
+          <div ref={explodeTextRef} className={`absolute top-[9%] text-center flex flex-col items-center gap-3 pointer-events-none transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
             currentChapter === 2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}>
-            <span className="text-[9px] font-bold tracking-[0.3em] text-accent uppercase">ENGINEERING PROTOCOL</span>
-            <h2 className="text-3xl md:text-6xl font-bold uppercase tracking-tight font-heading text-white">INTERNAL ARCHITECTURE.</h2>
-            <p className="text-muted/75 text-xs md:text-sm max-w-md font-light leading-relaxed">
+            <span className="text-[9px] font-bold tracking-[0.3em] text-accent uppercase transition-all duration-[1000ms] delay-75">ENGINEERING PROTOCOL</span>
+            <h2 className="text-3xl md:text-6xl font-bold uppercase tracking-tight font-heading text-white text-shadow-cinematic transition-all duration-[1200ms] delay-150">INTERNAL ARCHITECTURE.</h2>
+            <p className="text-muted/75 text-xs md:text-sm max-w-md font-light leading-relaxed text-shadow-cinematic transition-all duration-[1200ms] delay-300">
               Eight electro-mechanical components aligned with absolute geometric precision. Scroll to analyze active diagnostic layers.
             </p>
           </div>
 
           {/* Chapter 3: Telemetry Diagnostics view */}
-          <div className={`overlay-telemetry absolute inset-0 w-full h-full flex items-center justify-start px-6 md:px-28 transition-all duration-700 ${
+          <div className={`overlay-telemetry absolute inset-0 w-full h-full flex items-center justify-start px-6 md:px-28 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
             currentChapter === 3 ? "opacity-100 pointer-events-auto translate-x-0" : "opacity-0 pointer-events-none -translate-x-12"
           }`}>
-            <div className="app-panel-wrapper max-w-[360px] w-full bg-black/60 backdrop-blur-2xl p-7 rounded-[40px] border border-white/10 shadow-2xl flex flex-col gap-6 relative pointer-events-auto">
+            <div className="app-panel-wrapper max-w-[360px] w-full cinematic-blur-panel p-7 rounded-[40px] shadow-2xl flex flex-col gap-6 relative pointer-events-auto transition-all duration-[1200ms] delay-150">
               <div className="absolute -top-12 -left-12 w-32 h-32 bg-accent/15 blur-[60px] rounded-full pointer-events-none" />
               
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-gold-gradient flex items-center justify-center">
-                    <span className="text-[9px] text-black font-bold">O</span>
+                    <span className="text-[9px] text-black font-bold text-shadow-cinematic">O</span>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Owl Diagnostics</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-shadow-cinematic">Owl Diagnostics</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-green-500/10 border border-green-500/20">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
@@ -1542,10 +1566,10 @@ export default function CinematicLanding() {
               <div className="h-px bg-white/10 w-full" />
 
               {/* ECG Beat graph */}
-              <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+              <div className="bg-white/5 rounded-2xl p-4 border border-white/5 shadow-inner">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-[9px] text-muted/70 font-bold uppercase tracking-wider">Heart Rate Telemetry</span>
-                  <span className="text-xs font-bold text-red-500 animate-pulse flex items-center gap-1">
+                  <span className="text-[9px] text-muted/70 font-bold uppercase tracking-wider text-shadow-cinematic">Heart Rate Telemetry</span>
+                  <span className="text-xs font-bold text-red-500 animate-pulse flex items-center gap-1 text-shadow-cinematic">
                     <Heart size={10} className="fill-current" /> 72 BPM
                   </span>
                 </div>
@@ -1565,47 +1589,47 @@ export default function CinematicLanding() {
 
               {/* Sleep & Battery Grid */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex flex-col justify-between h-[100px]">
-                  <span className="text-[8px] text-muted/70 font-bold uppercase tracking-wider">Sleep Recovery</span>
+                <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex flex-col justify-between h-[100px] shadow-inner">
+                  <span className="text-[8px] text-muted/70 font-bold uppercase tracking-wider text-shadow-cinematic">Sleep Recovery</span>
                   <div>
-                    <span className="text-2xl font-bold text-blue-400 font-heading">92%</span>
-                    <p className="text-[8px] text-muted/70 uppercase font-semibold mt-1">Optimal State</p>
+                    <span className="text-2xl font-bold text-blue-400 font-heading text-shadow-cinematic">92%</span>
+                    <p className="text-[8px] text-muted/70 uppercase font-semibold mt-1 text-shadow-cinematic">Optimal State</p>
                   </div>
                 </div>
 
-                <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex flex-col justify-between h-[100px]">
-                  <span className="text-[8px] text-muted/70 font-bold uppercase tracking-wider">Parasympathetic</span>
+                <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex flex-col justify-between h-[100px] shadow-inner">
+                  <span className="text-[8px] text-muted/70 font-bold uppercase tracking-wider text-shadow-cinematic">Parasympathetic</span>
                   <div>
-                    <span className="text-2xl font-bold text-accent font-heading">Low Stress</span>
-                    <p className="text-[8px] text-muted/70 uppercase font-semibold mt-1">Balanced HRV</p>
+                    <span className="text-2xl font-bold text-accent font-heading text-shadow-cinematic">Low Stress</span>
+                    <p className="text-[8px] text-muted/70 uppercase font-semibold mt-1 text-shadow-cinematic">Balanced HRV</p>
                   </div>
                 </div>
               </div>
 
               <div className="flex justify-between items-center text-[9px] text-muted bg-white/5 px-4 py-3 rounded-xl border border-white/5">
-                <span className="font-semibold uppercase tracking-wider">Telemetry Link</span>
-                <span className="text-white font-bold font-mono">128-bit Encrypted</span>
+                <span className="font-semibold uppercase tracking-wider text-shadow-cinematic">Telemetry Link</span>
+                <span className="text-white font-bold font-mono text-shadow-cinematic">128-bit Encrypted</span>
               </div>
             </div>
           </div>
 
           {/* Chapter 4: Colorway customizer */}
-          <div className={`overlay-customizer absolute inset-0 w-full h-full flex flex-col justify-between items-center py-28 px-6 transition-all duration-700 ${
+          <div className={`overlay-customizer absolute inset-0 w-full h-full flex flex-col justify-between items-center py-28 px-6 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
             currentChapter === 4 ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none translate-y-8"
           }`}>
-            <div className="text-center flex flex-col gap-2.5">
+            <div className="text-center flex flex-col gap-2.5 transition-all duration-[1200ms] delay-75">
               <span className="text-[9px] font-bold tracking-[0.3em] text-accent uppercase">MATERIAL DESIGN SYSTEM</span>
-              <h2 className="text-4xl md:text-6xl font-bold font-heading uppercase text-white cinematic-heading">MATERIAL EXPRESSION.</h2>
+              <h2 className="text-4xl md:text-6xl font-bold font-heading uppercase text-white cinematic-heading text-shadow-cinematic">MATERIAL EXPRESSION.</h2>
             </div>
 
-            <div className="max-w-md text-center bg-black/40 backdrop-blur-md px-7 py-5 rounded-2xl border border-white/5">
-              <p className="text-xs text-muted/90 leading-relaxed font-light">
+            <div className="max-w-md text-center bg-black/35 backdrop-blur-md px-7 py-5 rounded-2xl border border-white/5 shadow-2xl transition-all duration-[1200ms] delay-150">
+              <p className="text-xs text-muted/90 leading-relaxed font-light text-shadow-cinematic">
                 {activeColor.desc}
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-4">
-              <div className="flex gap-4 p-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 pointer-events-auto">
+            <div className="flex flex-col items-center gap-4 transition-all duration-[1200ms] delay-300">
+              <div className="flex gap-4 p-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 pointer-events-auto shadow-xl">
                 {colors.map((color) => {
                   const isActive = activeColor.id === color.id;
                   return (
@@ -1626,67 +1650,71 @@ export default function CinematicLanding() {
                   );
                 })}
               </div>
-              <span className="text-[10px] font-bold tracking-widest text-accent uppercase">{activeColor.name}</span>
+              <span className="text-[10px] font-bold tracking-widest text-accent uppercase text-shadow-cinematic">{activeColor.name}</span>
             </div>
           </div>
 
           {/* Chapter 5: Performance specifications */}
-          <div className={`absolute w-full max-w-4xl px-6 pointer-events-none transition-all duration-700 ${
+          <div className={`absolute bottom-[10%] w-full max-w-4xl px-6 pointer-events-none transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
             currentChapter === 5 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}>
-            <div className="text-center flex flex-col gap-2 mb-8">
+            <div className="text-center flex flex-col gap-2 mb-8 transition-all duration-[1200ms] delay-75">
               <span className="text-[9px] font-bold tracking-[0.3em] text-accent uppercase">PERFORMANCE METRICS</span>
-              <h2 className="text-3xl md:text-5xl font-heading uppercase text-white">SOLID-STATE ENERGY CORE</h2>
+              <h2 className="text-3xl md:text-5xl font-heading uppercase text-white text-shadow-cinematic">SOLID-STATE ENERGY CORE</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6 max-w-3xl mx-auto pointer-events-auto">
-              <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
-                <div>
-                  <span className="text-[10px] text-accent uppercase font-bold tracking-wider">BATTERY CHEMISTRY</span>
-                  <p className="text-[9px] text-muted font-light mt-0.5">Solid-State Lithium Polymer arc segment</p>
+            
+            {/* Soft backdrop protection mask behind the grid */}
+            <div className="bg-black/30 backdrop-blur-md border border-white/5 rounded-3xl p-6 md:p-8 max-w-3xl mx-auto shadow-2xl pointer-events-auto transition-all duration-[1200ms] delay-150">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6">
+                <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
+                  <div>
+                    <span className="text-[10px] text-accent uppercase font-bold tracking-wider text-shadow-cinematic">BATTERY CHEMISTRY</span>
+                    <p className="text-[9px] text-muted font-light mt-0.5 text-shadow-cinematic">Solid-State Lithium Polymer arc segment</p>
+                  </div>
+                  <span className="text-xs font-bold text-white text-shadow-cinematic">3.8V Cell</span>
                 </div>
-                <span className="text-xs font-bold text-white">3.8V Cell</span>
-              </div>
-              <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
-                <div>
-                  <span className="text-[10px] text-accent uppercase font-bold tracking-wider">CHARGING SYSTEM</span>
-                  <p className="text-[9px] text-muted font-light mt-0.5">3-Winding induction wireless loop</p>
+                <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
+                  <div>
+                    <span className="text-[10px] text-accent uppercase font-bold tracking-wider text-shadow-cinematic">CHARGING SYSTEM</span>
+                    <p className="text-[9px] text-muted font-light mt-0.5 text-shadow-cinematic">3-Winding induction wireless loop</p>
+                  </div>
+                  <span className="text-xs font-bold text-white text-shadow-cinematic">15-Min Quick Charge</span>
                 </div>
-                <span className="text-xs font-bold text-white">15-Min Quick Charge</span>
-              </div>
-              <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
-                <div>
-                  <span className="text-[10px] text-accent uppercase font-bold tracking-wider">AUTONOMOUS RUNTIME</span>
-                  <p className="text-[9px] text-muted font-light mt-0.5">Continuous diagnostics neural loops</p>
+                <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
+                  <div>
+                    <span className="text-[10px] text-accent uppercase font-bold tracking-wider text-shadow-cinematic">AUTONOMOUS RUNTIME</span>
+                    <p className="text-[9px] text-muted font-light mt-0.5 text-shadow-cinematic">Continuous diagnostics neural loops</p>
+                  </div>
+                  <span className="text-xs font-bold text-white text-shadow-cinematic">7 Days Life</span>
                 </div>
-                <span className="text-xs font-bold text-white">7 Days Life</span>
-              </div>
-              <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
-                <div>
-                  <span className="text-[10px] text-accent uppercase font-bold tracking-wider">LOGIC POWER DRAW</span>
-                  <p className="text-[9px] text-muted font-light mt-0.5">Ultra-low microamperes idle loop</p>
+                <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
+                  <div>
+                    <span className="text-[10px] text-accent uppercase font-bold tracking-wider text-shadow-cinematic">LOGIC POWER DRAW</span>
+                    <p className="text-[9px] text-muted font-light mt-0.5 text-shadow-cinematic">Ultra-low microamperes idle loop</p>
+                  </div>
+                  <span className="text-xs font-bold text-white text-shadow-cinematic">1.2μA Sleep Mode</span>
                 </div>
-                <span className="text-xs font-bold text-white">1.2μA Sleep Mode</span>
               </div>
             </div>
           </div>
 
           {/* Chapter 6: Final CTA */}
-          <div className={`overlay-cta absolute inset-0 w-full h-full flex flex-col justify-between items-center py-24 px-6 transition-all duration-700 ${
+          <div className={`overlay-cta absolute inset-0 w-full h-full flex flex-col justify-between items-center py-24 px-6 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
             currentChapter === 6 ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none translate-y-12"
           }`}>
             <div className="w-full" />
 
-            <div className="cta-panel pointer-events-auto text-center flex flex-col items-center gap-6 max-w-2xl">
-              <h2 className="text-6xl md:text-9xl font-bold tracking-tighter uppercase leading-none font-heading cinematic-heading">
-                OWL <span className="text-gradient-gold">RING.</span>
+            <div className="cta-panel pointer-events-auto text-center flex flex-col items-center gap-6 max-w-2xl bg-black/20 backdrop-blur-[6px] border border-white/5 rounded-[40px] p-8 md:p-10 shadow-2xl transition-all duration-[1200ms] delay-150">
+              <h2 className="text-6xl md:text-9xl font-bold tracking-tighter uppercase leading-none font-heading cinematic-heading text-shadow-cinematic">
+                OWL <span className="text-[#c6a972]">RING.</span>
               </h2>
-              <p className="text-muted/80 text-xs md:text-sm max-w-md leading-relaxed font-body font-light">
+              <p className="text-muted/80 text-xs md:text-sm max-w-md leading-relaxed font-body font-light text-shadow-cinematic">
                 Own the bio-telemetry architecture of tomorrow. Reservations are currently open for limited slots in the Titanium series.
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-6 pt-4">
                 <Link href="/product/owl-ring-s1">
-                  <button className="magnetic-btn px-10 py-5 bg-gold-gradient text-black font-bold text-xs rounded-full flex items-center gap-3 transition-transform hover:scale-105 shadow-gold select-none">
+                  <button className="magnetic-btn px-10 py-5 bg-gold-gradient text-black font-bold text-xs rounded-full flex items-center gap-3 transition-transform hover:scale-105 shadow-gold select-none animate-pulse">
                     <span className="magnetic-text block flex items-center gap-2">
                       Pre-order S1 Now
                       <ArrowRight size={14} className="stroke-[3]" />
@@ -1703,24 +1731,24 @@ export default function CinematicLanding() {
 
               <div className="flex items-center gap-8 pt-8 border-t border-white/10 mt-8 w-full max-w-md justify-center">
                 <div>
-                  <div className="text-lg md:text-xl font-bold text-white font-heading">Grade 5</div>
-                  <div className="text-[8px] text-muted/70 uppercase tracking-widest font-semibold">Titanium</div>
+                  <div className="text-lg md:text-xl font-bold text-white font-heading text-shadow-cinematic">Grade 5</div>
+                  <div className="text-[8px] text-muted/70 uppercase tracking-widest font-semibold text-shadow-cinematic">Titanium</div>
                 </div>
                 <div className="w-px h-8 bg-white/10" />
                 <div>
-                  <div className="text-lg md:text-xl font-bold text-white font-heading">15-Min</div>
-                  <div className="text-[8px] text-muted/70 uppercase tracking-widest font-semibold">Quick Charge</div>
+                  <div className="text-lg md:text-xl font-bold text-white font-heading text-shadow-cinematic">15-Min</div>
+                  <div className="text-[8px] text-muted/70 uppercase tracking-widest font-semibold text-shadow-cinematic">Quick Charge</div>
                 </div>
                 <div className="w-px h-8 bg-white/10" />
                 <div>
-                  <div className="text-lg md:text-xl font-bold text-white font-heading">10 ATM</div>
-                  <div className="text-[8px] text-muted/70 uppercase tracking-widest font-semibold">Submersible</div>
+                  <div className="text-lg md:text-xl font-bold text-white font-heading text-shadow-cinematic">10 ATM</div>
+                  <div className="text-[8px] text-muted/70 uppercase tracking-widest font-semibold text-shadow-cinematic">Submersible</div>
                 </div>
               </div>
             </div>
 
             <div className="w-full text-center">
-              <span className="text-[9px] text-muted/40 uppercase tracking-[0.25em] font-bold">Limited slots. Shipping starts Fall 2026.</span>
+              <span className="text-[9px] text-muted/40 uppercase tracking-[0.25em] font-bold text-shadow-cinematic">Limited slots. Shipping starts Fall 2026.</span>
             </div>
           </div>
 
