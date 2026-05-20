@@ -8,13 +8,13 @@
   --color-muted: #B5B5B5;
   --color-input-bg: #0c0c0c;
   
-  --font-heading: "Space Grotesk", sans-serif;
+  --font-heading: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --font-body: "Inter", sans-serif;
   
   --radius-2xl: 24px;
   
-  --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.5);
-  --shadow-gold: 0 0 20px rgba(198, 169, 114, 0.2);
+  --shadow-premium: 0 30px 60px rgba(0, 0, 0, 0.6);
+  --shadow-gold: 0 0 30px rgba(198, 169, 114, 0.25);
 }
 
 :root {
@@ -29,21 +29,23 @@
     color: var(--foreground);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+    font-weight: 600;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+    @apply bg-white/5 backdrop-blur-2xl border border-white/10;
   }
   
   .glass-dark {
-    @apply bg-black/40 backdrop-blur-2xl border border-white/5;
+    @apply bg-black/50 backdrop-blur-[32px] border border-white/5;
   }
   
   .text-gradient-gold {
@@ -55,22 +57,38 @@
   }
 
   .glow-hover:hover {
-    box-shadow: 0 0 30px rgba(198, 169, 114, 0.3);
+    box-shadow: 0 0 40px rgba(198, 169, 114, 0.35);
   }
 
   .text-shadow-cinematic {
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.95), 0 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 2px 8px rgba(0, 0, 0, 0.85);
   }
 
   .cinematic-backdrop-mask {
-    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.48) 0%, rgba(0, 0, 0, 0) 80%);
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 80%);
   }
 
   .cinematic-blur-panel {
-    background: rgba(0, 0, 0, 0.16);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-premium-body {
+    @apply text-base md:text-lg text-neutral-400 font-light leading-relaxed;
+  }
+
+  .text-editorial-h2 {
+    @apply text-5xl md:text-7xl font-semibold tracking-tighter text-white leading-tight;
+  }
+  
+  .safe-text-gradient {
+    background: radial-gradient(circle at left center, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 70%);
+  }
+  
+  .safe-text-gradient-right {
+    background: radial-gradient(circle at right center, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 70%);
   }
 }
 
