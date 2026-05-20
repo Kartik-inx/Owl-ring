@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
 
@@ -24,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full scroll-smooth">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-body bg-background text-foreground min-h-screen antialiased`}>
+      <body className={`${inter.variable} font-body bg-background text-foreground min-h-screen antialiased selection:bg-accent selection:text-black`}>
         {children}
       </body>
     </html>

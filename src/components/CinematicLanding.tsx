@@ -1,17 +1,18 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { 
-  Sparkles, 
-  ArrowRight, 
-  Heart, 
-  Check,
-  ChevronDown
-} from "lucide-react";
+import { Check } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import HeroSection from "./landing/HeroSection";
+import EngineeringReveal from "./landing/EngineeringReveal";
+import HealthIntelligence from "./landing/HealthIntelligence";
+import BatteryCharging from "./landing/BatteryCharging";
+import AppConnectivity from "./landing/AppConnectivity";
+import PremiumMaterials from "./landing/PremiumMaterials";
+import HowItWorks from "./landing/HowItWorks";
+import FaqCta from "./landing/FaqCta";
 import * as THREE from "three";
 
 if (typeof window !== "undefined") {
@@ -963,15 +964,15 @@ export default function CinematicLanding() {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=850%",
-        scrub: 1.8, // Physical inertia lag catcher
+        end: "+=1400%",
+        scrub: 1.8,
         pin: true,
       }
     });
 
-    tl.duration(12.0);
+    tl.duration(18.0);
 
-    // CHAPTER TRIGGERS FOR CONDITIONAL REACT RENDERING (Prevents layout overwrite bugs)
+    // CHAPTER TRIGGERS FOR 9 SECTIONS
     tl.call(() => {
       setCurrentChapter(1);
       threeStateRef.current.targetParticleColor.setHex(0x1F2937);
@@ -982,12 +983,11 @@ export default function CinematicLanding() {
     }, [], 2.0);
     tl.call(() => {
       setCurrentChapter(3);
-      threeStateRef.current.targetParticleColor.setHex(0xEF4444);
+      threeStateRef.current.targetParticleColor.setHex(0x3B82F6);
     }, [], 4.0);
     tl.call(() => {
       setCurrentChapter(4);
-      const state = threeStateRef.current;
-      state.targetParticleColor.setHex(state.targetColor);
+      threeStateRef.current.targetParticleColor.setHex(0xEF4444);
     }, [], 6.0);
     tl.call(() => {
       setCurrentChapter(5);
@@ -995,10 +995,23 @@ export default function CinematicLanding() {
     }, [], 8.0);
     tl.call(() => {
       setCurrentChapter(6);
-      threeStateRef.current.targetParticleColor.setHex(0xC6A972);
+      threeStateRef.current.targetParticleColor.setHex(0x3B82F6);
     }, [], 10.0);
+    tl.call(() => {
+      setCurrentChapter(7);
+      const state = threeStateRef.current;
+      state.targetParticleColor.setHex(state.targetColor);
+    }, [], 12.0);
+    tl.call(() => {
+      setCurrentChapter(8);
+      threeStateRef.current.targetParticleColor.setHex(0x1F2937);
+    }, [], 14.0);
+    tl.call(() => {
+      setCurrentChapter(9);
+      threeStateRef.current.targetParticleColor.setHex(0xC6A972);
+    }, [], 16.0);
 
-    // SECTION 1: Hero reveal (duration 0 -> 2.0)
+    // SECTION 1: Cinematic Hero (0 -> 2.0)
     tl.to(animState, {
       ringRotationY: Math.PI * 0.8,
       ringRotationX: 0.22,
@@ -1016,7 +1029,7 @@ export default function CinematicLanding() {
       ease: "power1.inOut"
     }, 0);
 
-    // SECTION 2: Exploded Engineering View (2.0 -> 4.0)
+    // SECTION 2: Engineering Reveal — Exploded View Labels (2.0 -> 4.0)
     tl.to(animState, {
       shellSplit: 1.0,
       gasketExpand: 1.0,
@@ -1034,14 +1047,25 @@ export default function CinematicLanding() {
       ease: "power2.inOut"
     }, 2.0);
 
-    // Active highlights for Section 2 exploded view HUD labels
     tl.set(threeStateRef.current, { activeHighlight: "shell-top" }, 2.0);
-    tl.set(threeStateRef.current, { activeHighlight: "shell-bottom" }, 2.4);
-    tl.set(threeStateRef.current, { activeHighlight: "gasket" }, 2.8);
-    tl.set(threeStateRef.current, { activeHighlight: "pcb" }, 3.2);
-    tl.set(threeStateRef.current, { activeHighlight: "sensors" }, 3.6);
+    tl.set(threeStateRef.current, { activeHighlight: "shell-bottom" }, 2.2);
+    tl.set(threeStateRef.current, { activeHighlight: "gasket" }, 2.4);
+    tl.set(threeStateRef.current, { activeHighlight: "pcb" }, 2.6);
+    tl.set(threeStateRef.current, { activeHighlight: "sensors" }, 2.8);
+    tl.set(threeStateRef.current, { activeHighlight: "battery" }, 3.0);
+    tl.set(threeStateRef.current, { activeHighlight: "coil" }, 3.2);
+    tl.set(threeStateRef.current, { activeHighlight: "liner" }, 3.4);
+    tl.set(threeStateRef.current, { activeHighlight: "" }, 3.8);
 
-    // SECTION 3: Sensor Intelligence (4.0 -> 6.0)
+    // SECTION 3: Engineering Reveal Header (4.0 -> 6.0)
+    tl.to(animState, {
+      ringRotationY: Math.PI * 2.8,
+      ringPositionX: 1.4,
+      duration: 2.0,
+      ease: "power2.inOut"
+    }, 4.0);
+
+    // SECTION 4: Health Intelligence (6.0 -> 8.0)
     tl.to(animState, {
       shellSplit: 0,
       gasketExpand: 0,
@@ -1049,50 +1073,77 @@ export default function CinematicLanding() {
       sensorGlow: 0,
       batteryRotate: 0,
       coilExpand: 0,
-      ringPositionX: 1.6,
+      ringPositionX: -1.6,
       ringPositionY: 0,
       ringScale: 0.44,
-      ringRotationX: 0.22,
-      ringRotationY: Math.PI * 3.8,
+      ringRotationX: 1.2, // Tilted up to reveal the inside sensors
+      ringRotationY: Math.PI * 3.5,
       cameraFOV: 15.0,
-      duration: 2.0,
-      ease: "power2.inOut"
-    }, 4.0);
-
-    tl.set(threeStateRef.current, { activeHighlight: "sensors", waterMode: 1 }, 4.0);
-
-    // SECTION 4: Material Showcase (6.0 -> 8.0)
-    tl.to(animState, {
-      ringPositionX: 0,
-      ringPositionY: -0.35,
-      ringScale: 0.78,
-      ringRotationX: 0.38,
-      ringRotationY: Math.PI * 5.2,
-      cameraFOV: 11.5,
       duration: 2.0,
       ease: "power2.inOut"
     }, 6.0);
 
-    tl.set(threeStateRef.current, { activeHighlight: "", waterMode: 0 }, 6.0);
+    tl.set(threeStateRef.current, { activeHighlight: "", waterMode: 1 }, 6.0);
 
-    // SECTION 5: Performance Story (8.0 -> 10.0)
+    // SECTION 5: Battery & Charging (8.0 -> 10.0)
     tl.to(animState, {
       ringScale: 0.52,
-      ringPositionX: 0,
-      ringPositionY: 0.75,
+      ringPositionX: 1.2,
+      ringPositionY: 0,
       batteryRotate: 1.0,
       coilExpand: 1.0,
       ringRotationX: 0.42,
-      ringRotationY: Math.PI * 6.8,
+      ringRotationY: Math.PI * 5.2,
       cameraFOV: 15.5,
       duration: 2.0,
       ease: "power2.inOut"
     }, 8.0);
 
-    tl.set(threeStateRef.current, { activeHighlight: "battery" }, 8.0);
-    tl.set(threeStateRef.current, { activeHighlight: "coil" }, 9.0);
+    tl.set(threeStateRef.current, { activeHighlight: "", waterMode: 0 }, 8.0);
 
-    // SECTION 6: Final Product Hero (10.0 -> 12.0)
+    // SECTION 6: App Connectivity (10.0 -> 12.0)
+    tl.to(animState, {
+      batteryRotate: 0,
+      coilExpand: 0,
+      ringPositionX: -1.4,
+      ringPositionY: 0,
+      ringScale: 0.46,
+      ringRotationX: -0.5, // Tilted back, looking from below
+      ringRotationY: Math.PI * 6.5,
+      cameraFOV: 15.0,
+      duration: 2.0,
+      ease: "power2.inOut"
+    }, 10.0);
+
+    tl.set(threeStateRef.current, { activeHighlight: "" }, 10.0);
+
+    // SECTION 7: Premium Materials (12.0 -> 14.0)
+    tl.to(animState, {
+      ringPositionX: 1.0,
+      ringPositionY: -0.25,
+      ringScale: 0.78,
+      ringRotationX: 1.4, // Dramatic top-down full circle view
+      ringRotationY: Math.PI * 8.0,
+      cameraFOV: 11.5,
+      duration: 2.0,
+      ease: "power2.inOut"
+    }, 12.0);
+
+    tl.set(threeStateRef.current, { activeHighlight: "" }, 12.0);
+
+    // SECTION 8: How It Works (14.0 -> 16.0)
+    tl.to(animState, {
+      ringPositionX: 1.2,
+      ringPositionY: 0,
+      ringScale: 0.50,
+      ringRotationX: 0.1, // Very flat, almost pure edge-on profile
+      ringRotationY: Math.PI * 9.5,
+      cameraFOV: 14.5,
+      duration: 2.0,
+      ease: "power2.inOut"
+    }, 14.0);
+
+    // SECTION 9: FAQ + CTA (16.0 -> 18.0)
     tl.to(animState, {
       shellSplit: 0,
       gasketExpand: 0,
@@ -1100,17 +1151,17 @@ export default function CinematicLanding() {
       sensorGlow: 0,
       batteryRotate: 0,
       coilExpand: 0,
-      ringScale: 0.54,
+      ringScale: 0.42,
       ringPositionX: 0,
-      ringPositionY: -0.55,
+      ringPositionY: 0.8,
       ringRotationX: 0.32,
-      ringRotationY: Math.PI * 8.0,
-      cameraFOV: 14.5,
+      ringRotationY: Math.PI * 11.0,
+      cameraFOV: 14.0,
       duration: 2.0,
       ease: "power2.inOut"
-    }, 10.0);
+    }, 16.0);
 
-    tl.set(threeStateRef.current, { activeHighlight: "" }, 10.0);
+    tl.set(threeStateRef.current, { activeHighlight: "" }, 16.0);
 
     // --- RENDER LOOP AND PHYSICS EMULATION ---
     const pos = new THREE.Vector3();
@@ -1367,16 +1418,19 @@ export default function CinematicLanding() {
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block z-10 will-change-transform" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_15%,rgba(0,0,0,0.96)_85%)] pointer-events-none z-20" />
         
-        {/* DYNAMIC AMBIENT NEURAL BACKGROUND GLOW */}
+        {/* DYNAMIC AMBIENT BACKGROUND GLOW */}
         <div 
           className="absolute inset-0 transition-all duration-[2000ms] ease-out pointer-events-none z-0" 
           style={{
             background: 
               currentChapter === 1 ? "radial-gradient(circle at center, rgba(31, 41, 55, 0.22) 0%, rgba(0, 0, 0, 1) 80%)" :
               currentChapter === 2 ? "radial-gradient(circle at center, rgba(30, 41, 59, 0.25) 0%, rgba(0, 0, 0, 1) 85%)" :
-              currentChapter === 3 ? "radial-gradient(circle at center, rgba(239, 68, 68, 0.16) 0%, rgba(0, 0, 0, 1) 75%)" :
-              currentChapter === 4 ? `radial-gradient(circle at center, rgba(${activeColor.id === "gold" ? "198, 169, 114, 0.18" : "55, 65, 81, 0.2"}, 0.16) 0%, rgba(0, 0, 0, 1) 80%)` :
+              currentChapter === 3 ? "radial-gradient(circle at center, rgba(30, 41, 59, 0.25) 0%, rgba(0, 0, 0, 1) 85%)" :
+              currentChapter === 4 ? "radial-gradient(circle at center, rgba(59, 130, 246, 0.18) 0%, rgba(0, 0, 0, 1) 75%)" :
               currentChapter === 5 ? "radial-gradient(circle at center, rgba(245, 158, 11, 0.16) 0%, rgba(0, 0, 0, 1) 80%)" :
+              currentChapter === 6 ? "radial-gradient(circle at center, rgba(59, 130, 246, 0.14) 0%, rgba(0, 0, 0, 1) 80%)" :
+              currentChapter === 7 ? `radial-gradient(circle at center, rgba(${activeColor.id === "gold" ? "198, 169, 114, 0.18" : "55, 65, 81, 0.2"}) 0%, rgba(0, 0, 0, 1) 80%)` :
+              currentChapter === 8 ? "radial-gradient(circle at center, rgba(31, 41, 55, 0.18) 0%, rgba(0, 0, 0, 1) 80%)" :
               "radial-gradient(circle at center, rgba(198, 169, 114, 0.2) 0%, rgba(0, 0, 0, 1) 85%)"
           }}
         />
@@ -1393,119 +1447,111 @@ export default function CinematicLanding() {
           <path id="line-liner" fill="none" stroke="rgba(198, 169, 114, 0.45)" strokeWidth="1.2" strokeDasharray="1000" strokeDashoffset="1000" className="transition-all duration-300" />
         </svg>
 
-        {/* EXPENSIVE INTERACTIVE HUD LABELS */}
+        {/* ENGINEERING HUD LABELS (Three.js-referenced by ID) */}
         <div className="absolute inset-0 w-full h-full pointer-events-none z-30 overflow-hidden">
           
           {/* Left Aligned Columns */}
-          <div className="absolute top-[20%] left-6 md:left-20 flex flex-col gap-12 max-w-[300px]">
+          <div className="absolute top-[20%] left-6 md:left-20 flex flex-col gap-12 max-w-[320px]">
             
-            {/* Titanium Shell (Top Half) */}
             <div 
               id="label-shell-top" 
-              className="bg-black/65 backdrop-blur-md p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
+              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
             >
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                <span className="text-[9px] font-bold text-accent tracking-[0.2em] uppercase">OUTER MONOCOQUE</span>
+                <span className="text-[10px] font-bold text-accent tracking-[0.2em] uppercase">TITANIUM SHELL</span>
               </div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider font-heading">Top Titanium Casing</h4>
-              <p className="text-[10px] text-muted leading-relaxed font-light mt-1.5">Grade 5 black titanium top hemisphere with machined antenna isolator slots and raw chamfered bevels.</p>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Top Casing</h4>
+              <p className="text-xs text-muted leading-relaxed font-light mt-2">Grade 5 titanium hemisphere with machined antenna isolator slots and DLC coating.</p>
             </div>
 
-            {/* Titanium Shell (Bottom Half) */}
             <div 
               id="label-shell-bottom" 
-              className="bg-black/65 backdrop-blur-md p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
+              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
             >
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                <span className="text-[9px] font-bold text-accent tracking-[0.2em] uppercase">OUTER MONOCOQUE</span>
+                <span className="text-[10px] font-bold text-accent tracking-[0.2em] uppercase">TITANIUM SHELL</span>
               </div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider font-heading">Bottom Titanium Casing</h4>
-              <p className="text-[10px] text-muted leading-relaxed font-light mt-1.5">Lower hemisphere featuring laser-etched alignment vectors and a seamless CNC mating line.</p>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Bottom Casing</h4>
+              <p className="text-xs text-muted leading-relaxed font-light mt-2">Seamless CNC mating line with laser-etched alignment markers.</p>
             </div>
 
-            {/* Waterproof Gasket */}
             <div 
               id="label-gasket" 
-              className="bg-black/65 backdrop-blur-md p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
+              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
             >
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-pulse" />
-                <span className="text-[9px] font-bold text-neutral-400 tracking-[0.2em] uppercase">INGRESS BARRIER</span>
+                <span className="text-[10px] font-bold text-neutral-400 tracking-[0.2em] uppercase">WATERPROOF SEAL</span>
               </div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider font-heading">Silicone Gasket Ring</h4>
-              <p className="text-[10px] text-muted leading-relaxed font-light mt-1.5">Dark graphite rubber seal offering a compressible structural profile to secure internal components against 10 ATM pressure.</p>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Silicone Gasket</h4>
+              <p className="text-xs text-muted leading-relaxed font-light mt-2">Hermetically sealed dual-layer gaskets rated for 10 ATM / 100m depth.</p>
             </div>
 
-            {/* Flex PCB */}
             <div 
               id="label-pcb" 
-              className="bg-black/65 backdrop-blur-md p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
+              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
             >
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-[9px] font-bold text-green-400 tracking-[0.2em] uppercase">FLEX CIRCUITRY</span>
+                <span className="text-[10px] font-bold text-green-400 tracking-[0.2em] uppercase">SENSOR ARCHITECTURE</span>
               </div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider font-heading">Flexible Motherboard</h4>
-              <p className="text-[10px] text-muted leading-relaxed font-light mt-1.5">Curved 3D flex substrate containing microscopic gold traces and embedded resistors mapped precisely to internal curvatures.</p>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Flexible Motherboard</h4>
+              <p className="text-xs text-muted leading-relaxed font-light mt-2">Curved 3D flex substrate powering the Owl Neural Core with ARM Cortex-M4.</p>
             </div>
 
           </div>
 
           {/* Right Aligned Columns */}
-          <div className="absolute top-[20%] right-6 md:right-20 flex flex-col gap-12 max-w-[300px] text-right items-end">
+          <div className="absolute top-[20%] right-6 md:right-20 flex flex-col gap-12 max-w-[320px] text-right items-end">
             
-            {/* Biometric Sensors */}
             <div 
               id="label-sensors" 
-              className="bg-black/65 backdrop-blur-md p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
+              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
             >
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-[9px] font-bold text-red-500 tracking-[0.2em] uppercase">DIAGNOSTIC CORE</span>
+                <span className="text-[10px] font-bold text-red-500 tracking-[0.2em] uppercase">AI SENSOR ARRAY</span>
               </div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider font-heading">Biometric Sensor Array</h4>
-              <p className="text-[10px] text-muted leading-relaxed font-light mt-1.5 text-right">Ejected green and red diagnostic optical emitter modules, shielded behind tiny sapphire glass lenses.</p>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Biometric Telemetry</h4>
+              <p className="text-xs text-muted leading-relaxed font-light mt-2 text-right">Triple PPG optical emitters with sapphire glass lenses for heart-rate and sleep tracking.</p>
             </div>
 
-            {/* Battery Arc */}
             <div 
               id="label-battery" 
-              className="bg-black/65 backdrop-blur-md p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
+              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
             >
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                <span className="text-[9px] font-bold text-amber-400 tracking-[0.2em] uppercase">SOLID STATE ENERGY</span>
+                <span className="text-[10px] font-bold text-amber-400 tracking-[0.2em] uppercase">ENERGY CORE</span>
               </div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider font-heading">Curved Battery Segment</h4>
-              <p className="text-[10px] text-muted leading-relaxed font-light mt-1.5 text-right">High-density lithium polymer arc segment equipped with gold contact terminals and integrated thermal controllers.</p>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Solid-State Battery</h4>
+              <p className="text-xs text-muted leading-relaxed font-light mt-2 text-right">3.8V curved lithium-polymer arc. Up to 7 days of continuous monitoring.</p>
             </div>
 
-            {/* Charging Coil */}
             <div 
               id="label-coil" 
-              className="bg-black/65 backdrop-blur-md p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
+              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
             >
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                <span className="text-[9px] font-bold text-orange-500 tracking-[0.2em] uppercase">POWER TRANSFER</span>
+                <span className="text-[10px] font-bold text-orange-500 tracking-[0.2em] uppercase">WIRELESS CHARGING</span>
               </div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider font-heading">Induction Wireless Coil</h4>
-              <p className="text-[10px] text-muted leading-relaxed font-light mt-1.5 text-right">Triple-loop flat copper winding system tuned for high-efficiency wireless magnetic alignment charging.</p>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Induction Coil</h4>
+              <p className="text-xs text-muted leading-relaxed font-light mt-2 text-right">Triple-loop copper winding for high-efficiency magnetic alignment charging.</p>
             </div>
 
-            {/* Inner comfort sleeve */}
             <div 
               id="label-liner" 
-              className="bg-black/65 backdrop-blur-md p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
+              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
             >
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                <span className="text-[9px] font-bold text-accent tracking-[0.2em] uppercase">COMFORT RESIN</span>
+                <span className="text-[10px] font-bold text-accent tracking-[0.2em] uppercase">COMFORT RESIN</span>
               </div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider font-heading">Inner Comfort Liner</h4>
-              <p className="text-[10px] text-muted leading-relaxed font-light mt-1.5 text-right">Dermatologically safe hypoallergenic liner with micro comfort ridges and laser-engraved certification markings.</p>
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Inner Comfort Liner</h4>
+              <p className="text-xs text-muted leading-relaxed font-light mt-2 text-right">Hypoallergenic resin with micro comfort ridges. Ergonomic all-day wear.</p>
             </div>
 
           </div>
@@ -1515,242 +1561,77 @@ export default function CinematicLanding() {
         {/* PINNED NARRATIVE CHAPTER OVERLAYS */}
         <div className="absolute inset-0 w-full h-full pointer-events-none z-30 flex items-center justify-center">
           
-          {/* Chapter 1: Hero Intro */}
-          <div ref={introTextRef} className={`absolute top-[9%] text-center flex flex-col items-center gap-5 pointer-events-none transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            currentChapter === 1 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
-          }`}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-lg transition-all duration-[1000ms] delay-75 shadow-lg">
-              <Sparkles size={11} className="text-accent animate-pulse" />
-              <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-accent">PRE-PRODUCTION PREVIEW</span>
-            </div>
-            
-            <h1 className="text-6xl md:text-9xl font-bold tracking-tighter uppercase leading-none mt-2 font-heading text-shadow-cinematic transition-all duration-[1200ms] delay-150 ease-out">
-              OWL <span className="text-[#c6a972]">RING.</span>
-            </h1>
-            <p className="text-neutral-200 text-xs md:text-sm max-w-2xl tracking-[0.18em] mt-3 font-body leading-relaxed font-light uppercase text-shadow-cinematic transition-all duration-[1200ms] delay-300">
-              Stealth DLC Titanium • Triple PPG Diagnostics • 7-Day Battery
-            </p>
-          </div>
+          {/* Section 1: Cinematic Hero */}
+          <HeroSection currentChapter={currentChapter} introTextRef={introTextRef} />
 
-          {/* Chapter 2: Exploded Engineering view */}
-          <div ref={explodeTextRef} className={`absolute top-[9%] text-center flex flex-col items-center gap-3 pointer-events-none transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            currentChapter === 2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}>
-            <span className="text-[9px] font-bold tracking-[0.3em] text-accent uppercase transition-all duration-[1000ms] delay-75">ENGINEERING PROTOCOL</span>
-            <h2 className="text-3xl md:text-6xl font-bold uppercase tracking-tight font-heading text-white text-shadow-cinematic transition-all duration-[1200ms] delay-150">INTERNAL ARCHITECTURE.</h2>
-            <p className="text-muted/75 text-xs md:text-sm max-w-md font-light leading-relaxed text-shadow-cinematic transition-all duration-[1200ms] delay-300">
-              Eight electro-mechanical components aligned with absolute geometric precision. Scroll to analyze active diagnostic layers.
-            </p>
-          </div>
+          {/* Section 2: Engineering Reveal Labels */}
+          {/* Section 3: Engineering Reveal Text */}
+          <EngineeringReveal currentChapter={currentChapter} explodeTextRef={explodeTextRef} />
 
-          {/* Chapter 3: Telemetry Diagnostics view */}
-          <div className={`overlay-telemetry absolute inset-0 w-full h-full flex items-center justify-start px-6 md:px-28 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            currentChapter === 3 ? "opacity-100 pointer-events-auto translate-x-0" : "opacity-0 pointer-events-none -translate-x-12"
+          {/* Section 4: Health Intelligence */}
+          <HealthIntelligence currentChapter={currentChapter} />
+
+          {/* Section 5: Battery & Charging */}
+          <BatteryCharging currentChapter={currentChapter} />
+
+          {/* Section 6: App Connectivity */}
+          <AppConnectivity currentChapter={currentChapter} />
+
+          {/* Section 7: Premium Materials & Color Customizer */}
+          <div className={`overlay-customizer absolute inset-0 w-full h-full flex items-center justify-start px-8 md:px-24 transition-all duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] z-40 safe-text-gradient ${
+            currentChapter === 7 ? "opacity-100 pointer-events-auto translate-x-0" : "opacity-0 pointer-events-none -translate-x-12"
           }`}>
-            <div className="app-panel-wrapper max-w-[360px] w-full cinematic-blur-panel p-7 rounded-[40px] shadow-2xl flex flex-col gap-6 relative pointer-events-auto transition-all duration-[1200ms] delay-150">
-              <div className="absolute -top-12 -left-12 w-32 h-32 bg-accent/15 blur-[60px] rounded-full pointer-events-none" />
-              
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-gold-gradient flex items-center justify-center">
-                    <span className="text-[9px] text-black font-bold text-shadow-cinematic">O</span>
-                  </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-shadow-cinematic">Owl Diagnostics</span>
-                </div>
-                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-green-500/10 border border-green-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-[8px] font-bold text-green-400 uppercase tracking-widest">Live Sync</span>
-                </div>
+            <div className="max-w-[480px] w-full text-left flex flex-col gap-8">
+              <div>
+                <span className="text-[11px] font-bold tracking-[0.25em] text-[#c6a972] uppercase transition-all duration-[1000ms] delay-75">
+                  ALL-DAY COMFORT
+                </span>
+                <h2 className="text-4xl md:text-5xl font-semibold tracking-tighter text-white leading-tight text-shadow-cinematic mt-4 transition-all duration-[1200ms] delay-150">
+                  GRADE 5<br />TITANIUM.
+                </h2>
+                <p className="text-premium-body text-shadow-cinematic mt-6 transition-all duration-[1200ms] delay-300">
+                  CNC-machined from aerospace-grade titanium with an ultra-lightweight comfort resin inner shell. Designed for 24/7 wear and complete 10 ATM water resistance.
+                </p>
               </div>
 
-              <div className="h-px bg-white/10 w-full" />
-
-              {/* ECG Beat graph */}
-              <div className="bg-white/5 rounded-2xl p-4 border border-white/5 shadow-inner">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-[9px] text-muted/70 font-bold uppercase tracking-wider text-shadow-cinematic">Heart Rate Telemetry</span>
-                  <span className="text-xs font-bold text-red-500 animate-pulse flex items-center gap-1 text-shadow-cinematic">
-                    <Heart size={10} className="fill-current" /> 72 BPM
-                  </span>
-                </div>
-                <div className="w-full h-[60px] overflow-hidden relative">
-                  <svg className="w-full h-full">
-                    <path 
-                      d={ecgPath}
-                      fill="none"
-                      stroke="#ef4444"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
+              <div className="bg-black/40 backdrop-blur-md px-7 py-5 rounded-2xl border border-white/5 shadow-2xl transition-all duration-[1200ms] delay-150">
+                <p className="text-sm text-white/90 leading-relaxed font-light text-shadow-cinematic">
+                  {activeColor.desc}
+                </p>
               </div>
 
-              {/* Sleep & Battery Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex flex-col justify-between h-[100px] shadow-inner">
-                  <span className="text-[8px] text-muted/70 font-bold uppercase tracking-wider text-shadow-cinematic">Sleep Recovery</span>
-                  <div>
-                    <span className="text-2xl font-bold text-blue-400 font-heading text-shadow-cinematic">92%</span>
-                    <p className="text-[8px] text-muted/70 uppercase font-semibold mt-1 text-shadow-cinematic">Optimal State</p>
-                  </div>
+              <div className="flex flex-col items-start gap-4 transition-all duration-[1200ms] delay-300">
+                <div className="flex gap-4 p-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 pointer-events-auto shadow-xl">
+                  {colors.map((color) => {
+                    const isActive = activeColor.id === color.id;
+                    return (
+                      <button
+                        key={color.id}
+                        onClick={() => handleColorChange(color)}
+                        className="group relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 hover:scale-105"
+                        style={{ backgroundColor: color.value }}
+                        title={color.name}
+                      >
+                        <span 
+                          className={`absolute -inset-1.5 rounded-full border-2 transition-all duration-500 scale-90 opacity-0 ${
+                            isActive ? "border-accent scale-100 opacity-100" : "border-white/20 group-hover:scale-95 group-hover:opacity-40"
+                          }`}
+                        />
+                        {isActive && <Check size={16} className="text-black stroke-[3]" />}
+                      </button>
+                    );
+                  })}
                 </div>
-
-                <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex flex-col justify-between h-[100px] shadow-inner">
-                  <span className="text-[8px] text-muted/70 font-bold uppercase tracking-wider text-shadow-cinematic">Parasympathetic</span>
-                  <div>
-                    <span className="text-2xl font-bold text-accent font-heading text-shadow-cinematic">Low Stress</span>
-                    <p className="text-[8px] text-muted/70 uppercase font-semibold mt-1 text-shadow-cinematic">Balanced HRV</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center text-[9px] text-muted bg-white/5 px-4 py-3 rounded-xl border border-white/5">
-                <span className="font-semibold uppercase tracking-wider text-shadow-cinematic">Telemetry Link</span>
-                <span className="text-white font-bold font-mono text-shadow-cinematic">128-bit Encrypted</span>
+                <span className="text-[11px] font-bold tracking-widest text-accent uppercase pl-2 text-shadow-cinematic">{activeColor.name}</span>
               </div>
             </div>
           </div>
 
-          {/* Chapter 4: Colorway customizer */}
-          <div className={`overlay-customizer absolute inset-0 w-full h-full flex flex-col justify-between items-center py-28 px-6 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            currentChapter === 4 ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none translate-y-8"
-          }`}>
-            <div className="text-center flex flex-col gap-2.5 transition-all duration-[1200ms] delay-75">
-              <span className="text-[9px] font-bold tracking-[0.3em] text-accent uppercase">MATERIAL DESIGN SYSTEM</span>
-              <h2 className="text-4xl md:text-6xl font-bold font-heading uppercase text-white cinematic-heading text-shadow-cinematic">MATERIAL EXPRESSION.</h2>
-            </div>
+          {/* Section 8: How It Works */}
+          <HowItWorks currentChapter={currentChapter} />
 
-            <div className="max-w-md text-center bg-black/35 backdrop-blur-md px-7 py-5 rounded-2xl border border-white/5 shadow-2xl transition-all duration-[1200ms] delay-150">
-              <p className="text-xs text-muted/90 leading-relaxed font-light text-shadow-cinematic">
-                {activeColor.desc}
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center gap-4 transition-all duration-[1200ms] delay-300">
-              <div className="flex gap-4 p-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 pointer-events-auto shadow-xl">
-                {colors.map((color) => {
-                  const isActive = activeColor.id === color.id;
-                  return (
-                    <button
-                      key={color.id}
-                      onClick={() => handleColorChange(color)}
-                      className="group relative flex items-center justify-center w-11 h-11 rounded-full transition-all duration-300 hover:scale-105"
-                      style={{ backgroundColor: color.value }}
-                      title={color.name}
-                    >
-                      <span 
-                        className={`absolute -inset-1.5 rounded-full border-2 transition-all duration-500 scale-90 opacity-0 ${
-                          isActive ? "border-accent scale-100 opacity-100" : "border-white/20 group-hover:scale-95 group-hover:opacity-40"
-                        }`}
-                      />
-                      {isActive && <Check size={14} className="text-black stroke-[3]" />}
-                    </button>
-                  );
-                })}
-              </div>
-              <span className="text-[10px] font-bold tracking-widest text-accent uppercase text-shadow-cinematic">{activeColor.name}</span>
-            </div>
-          </div>
-
-          {/* Chapter 5: Performance specifications */}
-          <div className={`absolute bottom-[10%] w-full max-w-4xl px-6 pointer-events-none transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            currentChapter === 5 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}>
-            <div className="text-center flex flex-col gap-2 mb-8 transition-all duration-[1200ms] delay-75">
-              <span className="text-[9px] font-bold tracking-[0.3em] text-accent uppercase">PERFORMANCE METRICS</span>
-              <h2 className="text-3xl md:text-5xl font-heading uppercase text-white text-shadow-cinematic">SOLID-STATE ENERGY CORE</h2>
-            </div>
-            
-            {/* Soft backdrop protection mask behind the grid */}
-            <div className="bg-black/30 backdrop-blur-md border border-white/5 rounded-3xl p-6 md:p-8 max-w-3xl mx-auto shadow-2xl pointer-events-auto transition-all duration-[1200ms] delay-150">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6">
-                <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
-                  <div>
-                    <span className="text-[10px] text-accent uppercase font-bold tracking-wider text-shadow-cinematic">BATTERY CHEMISTRY</span>
-                    <p className="text-[9px] text-muted font-light mt-0.5 text-shadow-cinematic">Solid-State Lithium Polymer arc segment</p>
-                  </div>
-                  <span className="text-xs font-bold text-white text-shadow-cinematic">3.8V Cell</span>
-                </div>
-                <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
-                  <div>
-                    <span className="text-[10px] text-accent uppercase font-bold tracking-wider text-shadow-cinematic">CHARGING SYSTEM</span>
-                    <p className="text-[9px] text-muted font-light mt-0.5 text-shadow-cinematic">3-Winding induction wireless loop</p>
-                  </div>
-                  <span className="text-xs font-bold text-white text-shadow-cinematic">15-Min Quick Charge</span>
-                </div>
-                <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
-                  <div>
-                    <span className="text-[10px] text-accent uppercase font-bold tracking-wider text-shadow-cinematic">AUTONOMOUS RUNTIME</span>
-                    <p className="text-[9px] text-muted font-light mt-0.5 text-shadow-cinematic">Continuous diagnostics neural loops</p>
-                  </div>
-                  <span className="text-xs font-bold text-white text-shadow-cinematic">7 Days Life</span>
-                </div>
-                <div className="border-b border-white/10 py-3.5 flex justify-between items-center">
-                  <div>
-                    <span className="text-[10px] text-accent uppercase font-bold tracking-wider text-shadow-cinematic">LOGIC POWER DRAW</span>
-                    <p className="text-[9px] text-muted font-light mt-0.5 text-shadow-cinematic">Ultra-low microamperes idle loop</p>
-                  </div>
-                  <span className="text-xs font-bold text-white text-shadow-cinematic">1.2μA Sleep Mode</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Chapter 6: Final CTA */}
-          <div className={`overlay-cta absolute inset-0 w-full h-full flex flex-col justify-between items-center py-24 px-6 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            currentChapter === 6 ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none translate-y-12"
-          }`}>
-            <div className="w-full" />
-
-            <div className="cta-panel pointer-events-auto text-center flex flex-col items-center gap-6 max-w-2xl bg-black/20 backdrop-blur-[6px] border border-white/5 rounded-[40px] p-8 md:p-10 shadow-2xl transition-all duration-[1200ms] delay-150">
-              <h2 className="text-6xl md:text-9xl font-bold tracking-tighter uppercase leading-none font-heading cinematic-heading text-shadow-cinematic">
-                OWL <span className="text-[#c6a972]">RING.</span>
-              </h2>
-              <p className="text-muted/80 text-xs md:text-sm max-w-md leading-relaxed font-body font-light text-shadow-cinematic">
-                Own the bio-telemetry architecture of tomorrow. Reservations are currently open for limited slots in the Titanium series.
-              </p>
-
-              <div className="flex flex-wrap items-center justify-center gap-6 pt-4">
-                <Link href="/product/owl-ring-s1">
-                  <button className="magnetic-btn px-10 py-5 bg-gold-gradient text-black font-bold text-xs rounded-full flex items-center gap-3 transition-transform hover:scale-105 shadow-gold select-none animate-pulse">
-                    <span className="magnetic-text block flex items-center gap-2">
-                      Pre-order S1 Now
-                      <ArrowRight size={14} className="stroke-[3]" />
-                    </span>
-                  </button>
-                </Link>
-                
-                <Link href="/#features">
-                  <button className="magnetic-btn px-10 py-5 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold text-xs rounded-full transition-all select-none">
-                    <span className="magnetic-text block">Specifications</span>
-                  </button>
-                </Link>
-              </div>
-
-              <div className="flex items-center gap-8 pt-8 border-t border-white/10 mt-8 w-full max-w-md justify-center">
-                <div>
-                  <div className="text-lg md:text-xl font-bold text-white font-heading text-shadow-cinematic">Grade 5</div>
-                  <div className="text-[8px] text-muted/70 uppercase tracking-widest font-semibold text-shadow-cinematic">Titanium</div>
-                </div>
-                <div className="w-px h-8 bg-white/10" />
-                <div>
-                  <div className="text-lg md:text-xl font-bold text-white font-heading text-shadow-cinematic">15-Min</div>
-                  <div className="text-[8px] text-muted/70 uppercase tracking-widest font-semibold text-shadow-cinematic">Quick Charge</div>
-                </div>
-                <div className="w-px h-8 bg-white/10" />
-                <div>
-                  <div className="text-lg md:text-xl font-bold text-white font-heading text-shadow-cinematic">10 ATM</div>
-                  <div className="text-[8px] text-muted/70 uppercase tracking-widest font-semibold text-shadow-cinematic">Submersible</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="w-full text-center">
-              <span className="text-[9px] text-muted/40 uppercase tracking-[0.25em] font-bold text-shadow-cinematic">Limited slots. Shipping starts Fall 2026.</span>
-            </div>
-          </div>
+          {/* Section 9: FAQ + CTA */}
+          <FaqCta currentChapter={currentChapter} />
 
         </div>
 

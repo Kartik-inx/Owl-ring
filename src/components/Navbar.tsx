@@ -57,7 +57,7 @@ const Navbar = () => {
       >
         {/* Logo */}
         <Link href="/" className="flex items-center group select-none">
-          <div className="relative h-6 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+          <div className="relative h-10 md:h-12 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
             <img 
               src="/images/logo.png" 
               alt="Owl Brand Logo" 
