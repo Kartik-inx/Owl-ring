@@ -12,6 +12,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [visible, setVisible] = useState(true);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -22,20 +23,42 @@ const Navbar = () => {
     checkAuth();
     window.addEventListener("storage", checkAuth);
     
+    let lastScrollY = window.scrollY;
+    
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 20);
+      
+      if (window.innerWidth < 768) {
+        if (mobileMenuOpen) {
+          setVisible(true);
+        } else if (currentScrollY <= 40) {
+          setVisible(true);
+        } else if (currentScrollY > lastScrollY) {
+          // Scrolling down -> hide
+          setVisible(false);
+        } else {
+          // Scrolling up -> show
+          setVisible(true);
+        }
+      } else {
+        setVisible(true);
+      }
+      
+      lastScrollY = currentScrollY;
     };
+    
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("storage", checkAuth);
     };
-  }, []);
+  }, [mobileMenuOpen]);
 
   const navLinks = [
     { name: "The Ring", href: "/#product" },
     { name: "Features", href: "/#features" },
-    { name: "Sizing", href: "/#sizing" },
+    { name: "Sizing", href: "/product/owl-ring-s1" },
     { name: "Support", href: "/support" },
   ];
 
@@ -45,18 +68,20 @@ const Navbar = () => {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out px-6 md:px-12",
-        scrolled ? "py-4" : "py-8"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out px-4 sm:px-6 md:px-12",
+        scrolled ? "py-3 md:py-4" : "py-4 sm:py-6 md:py-8",
+        !visible && "max-md:translate-y-[-110%] max-md:opacity-0"
       )}
     >
       <div
         className={cn(
-          "max-w-7xl mx-auto flex items-center justify-between transition-all duration-500 px-6 py-3 rounded-full border border-white/5",
-          scrolled ? "glass-dark shadow-premium" : "bg-transparent border-transparent"
+          "max-w-7xl mx-auto flex items-center justify-between transition-all duration-500 px-4 sm:px-6 py-2 sm:py-3 rounded-full border border-white/5",
+          scrolled ? "glass-dark shadow-premium" : "bg-transparent border-transparent",
+          pathname.startsWith("/auth") ? "justify-center" : ""
         )}
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center group select-none">
+        <Link href="/" className="flex items-center group select-none focus:outline-none">
           <div className="relative h-10 md:h-12 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
             <img 
               src="/images/logo.png" 
@@ -66,104 +91,110 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((link, idx) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              onMouseEnter={() => setHoveredIndex(idx)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              className={cn(
-                "relative px-4 py-2 text-sm font-medium transition-colors rounded-full text-shadow-cinematic select-none",
-                pathname === link.href ? "text-accent" : "text-muted hover:text-white"
-              )}
-            >
-              {hoveredIndex === idx && (
-                <motion.span
-                  layoutId="navHoverBackdrop"
-                  className="absolute inset-0 bg-white/5 rounded-full z-0"
-                  transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                />
-              )}
-              <span className="relative z-10">{link.name}</span>
-            </Link>
-          ))}
-        </div>
-
-        {/* Right Icons */}
-        <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-4">
-            {isLoggedIn ? (
-              <Link href="/profile" className="text-muted hover:text-white transition-colors">
-                <User size={20} />
-              </Link>
-            ) : (
-              <Link href="/auth/login" className="text-xs font-bold uppercase tracking-widest text-muted hover:text-white transition-colors">
-                Sign In
-              </Link>
-            )}
-            <Link href="/checkout" className="text-muted hover:text-white transition-colors relative">
-              <ShoppingBag size={20} />
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-black text-[10px] font-bold rounded-full flex items-center justify-center">
-                0
-              </span>
-            </Link>
-          </div>
-          <button
-            className="md:hidden text-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-full left-6 right-6 mt-4 glass-dark rounded-3xl p-8 flex flex-col gap-6 shadow-2xl border border-white/10"
-          >
-            {navLinks.map((link) => (
+        {/* Desktop Nav - Hidden on auth pages */}
+        {!pathname.startsWith("/auth") && (
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map((link, idx) => (
               <Link
                 key={link.name}
                 href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-lg font-medium text-muted hover:text-white transition-colors"
+                onMouseEnter={() => setHoveredIndex(idx)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                className={cn(
+                  "relative px-4 py-2 text-sm font-medium transition-colors rounded-full text-shadow-cinematic select-none",
+                  pathname === link.href ? "text-accent" : "text-muted hover:text-white"
+                )}
               >
-                {link.name}
+                {hoveredIndex === idx && (
+                  <motion.span
+                    layoutId="navHoverBackdrop"
+                    className="absolute inset-0 bg-white/5 rounded-full z-0"
+                    transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                  />
+                )}
+                <span className="relative z-10">{link.name}</span>
               </Link>
             ))}
-            <div className="h-px bg-white/10 w-full" />
-            <div className="flex justify-between items-center">
+          </div>
+        )}
+
+        {/* Right Icons - Hidden on auth pages */}
+        {!pathname.startsWith("/auth") && (
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-4">
               {isLoggedIn ? (
-                <Link href="/profile" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-white">
-                  My Profile
+                <Link href="/profile" className="text-muted hover:text-white transition-colors">
+                  <User size={20} />
                 </Link>
               ) : (
-                <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-white">
+                <Link href="/auth/login" className="text-xs font-bold uppercase tracking-widest text-muted hover:text-white transition-colors">
                   Sign In
                 </Link>
               )}
-              <Link href="/checkout" onClick={() => setMobileMenuOpen(false)} className="relative text-white">
-                <ShoppingBag size={24} />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-black text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
+              <Link href="/checkout" className="text-muted hover:text-white transition-colors relative">
+                <ShoppingBag size={20} />
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-black text-[10px] font-bold rounded-full flex items-center justify-center">
+                  0
+                </span>
               </Link>
             </div>
-            <Link 
-              href="/admin/dashboard" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-xs text-muted/50 uppercase tracking-widest font-bold text-center mt-4"
+            <button
+              className="md:hidden text-white"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              Admin Access
-            </Link>
-          </motion.div>
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         )}
-      </AnimatePresence>
+      </div>
+
+      {/* Mobile Menu - Only render if not auth page */}
+      {!pathname.startsWith("/auth") && (
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="md:hidden absolute top-full left-6 right-6 mt-4 glass-dark rounded-3xl p-8 flex flex-col gap-6 shadow-2xl border border-white/10"
+            >
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-lg font-medium text-muted hover:text-white transition-colors"
+                >
+                  {link.name}
+                </Link>
+              ))}
+              <div className="h-px bg-white/10 w-full" />
+              <div className="flex justify-between items-center">
+                {isLoggedIn ? (
+                  <Link href="/profile" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-white">
+                    My Profile
+                  </Link>
+                ) : (
+                  <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-white">
+                    Sign In
+                  </Link>
+                )}
+                <Link href="/checkout" onClick={() => setMobileMenuOpen(false)} className="relative text-white">
+                  <ShoppingBag size={24} />
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-black text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
+                </Link>
+              </div>
+              <Link 
+                href="/admin/dashboard" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-xs text-muted/50 uppercase tracking-widest font-bold text-center mt-4"
+              >
+                Admin Access
+              </Link>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </nav>
   );
 };
