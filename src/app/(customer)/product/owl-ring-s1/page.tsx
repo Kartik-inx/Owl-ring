@@ -14,8 +14,17 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState("10");
   const [quantity, setQuantity] = useState(1);
 
+  const productImages = [
+    "/images/ring-1.jpg",
+    "/images/ring-2.jpg",
+    "/images/ring-3.jpg",
+    "/images/ring-4.jpg",
+    "/images/ring-5.jpg"
+  ];
+  const [selectedImage, setSelectedImage] = useState(productImages[0]);
+
   return (
-    <div className="bg-background min-h-screen text-white">
+    <div className="min-h-screen text-white">
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-32 pb-24">
         <nav className="flex items-center gap-2 text-xs font-medium text-muted uppercase tracking-widest mb-8">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
@@ -31,21 +40,31 @@ const ProductDetails = () => {
               className="relative aspect-square rounded-[48px] overflow-hidden glass border border-white/5 flex items-center justify-center group"
             >
               <Image
-                src={product.image}
+                src={selectedImage}
                 alt={product.name}
                 fill
                 unoptimized
-                className="object-contain p-12 group-hover:scale-110 transition-transform duration-700"
+                className="object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              <div className="absolute top-6 right-6 glass px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+              <div className="absolute top-6 right-6 glass px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest z-10">
                 Series 1
               </div>
             </motion.div>
             
-            <div className="grid grid-cols-4 gap-4">
-               {[1, 2, 3, 4].map((i) => (
-                 <div key={i} className="aspect-square rounded-3xl glass border border-white/5 cursor-pointer hover:border-accent transition-colors flex items-center justify-center p-4">
-                    <Image src={product.image} alt="Thumb" width={80} height={80} unoptimized className="object-contain opacity-50 hover:opacity-100 transition-opacity" />
+            <div className="grid grid-cols-5 gap-4">
+               {productImages.map((img, idx) => (
+                 <div 
+                   key={idx} 
+                   onClick={() => setSelectedImage(img)}
+                   className={cn(
+                     "relative aspect-square rounded-3xl glass border cursor-pointer hover:border-accent transition-colors flex items-center justify-center overflow-hidden",
+                     selectedImage === img ? "border-accent ring-1 ring-accent" : "border-white/5"
+                   )}
+                 >
+                    <Image src={img} alt={`Thumb ${idx + 1}`} fill unoptimized className={cn(
+                      "object-cover transition-opacity",
+                      selectedImage === img ? "opacity-100" : "opacity-50 hover:opacity-100"
+                    )} />
                  </div>
                ))}
             </div>

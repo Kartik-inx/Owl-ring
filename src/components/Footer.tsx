@@ -1,8 +1,18 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { Globe, Mail, MessageSquare } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
+  const pathname = usePathname();
+  
+  // Hide footer on auth pages
+  if (pathname?.startsWith("/auth")) {
+    return null;
+  }
+
   const links = {
     Product: [
       { name: "The Ring", href: "/#product" },
@@ -24,12 +34,12 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-background border-t border-white/5 pt-24 pb-12 px-6 md:px-12">
+    <footer className="bg-background border-t border-white/5 pt-16 md:pt-24 pb-8 md:pb-12 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-20">
           <div className="col-span-2">
-            <Link href="/" className="flex items-center mb-6 group select-none">
-              <div className="relative h-6 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+            <Link href="/" className="flex items-center mb-6 group select-none focus:outline-none">
+              <div className="relative h-10 md:h-12 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
                 <img 
                   src="/images/logo.png" 
                   alt="Owl Brand Logo" 

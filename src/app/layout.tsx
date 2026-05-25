@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import BackgroundRing from "@/components/BackgroundRing";
 import "./globals.css";
 
 const inter = Inter({
@@ -18,8 +19,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full scroll-smooth">
-      <body className={`${inter.variable} font-body bg-background text-foreground min-h-screen antialiased selection:bg-accent selection:text-black`}>
+    <html lang="en" className="h-full scroll-smooth bg-black">
+      <body className={`${inter.variable} font-body text-foreground min-h-screen antialiased selection:bg-accent selection:text-black relative bg-transparent`}>
+        <BackgroundRing />
         {children}
       </body>
     </html>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Check } from "lucide-react";
+import { Check, ArrowUp } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -10,10 +10,12 @@ import EngineeringReveal from "./landing/EngineeringReveal";
 import HealthIntelligence from "./landing/HealthIntelligence";
 import BatteryCharging from "./landing/BatteryCharging";
 import AppConnectivity from "./landing/AppConnectivity";
-import PremiumMaterials from "./landing/PremiumMaterials";
+
 import HowItWorks from "./landing/HowItWorks";
 import FaqCta from "./landing/FaqCta";
+import ReviewsOverlay from "./landing/ReviewsOverlay";
 import * as THREE from "three";
+import { motion, AnimatePresence } from "framer-motion";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -56,7 +58,7 @@ const colors = [
     materialColor: 0xD1D5DB,
     roughness: 0.12,
     metalness: 0.95,
-    desc: "CNC-machined Grade 5 titanium alloy. Polished chamfered edges with raw brushed side panels reflecting clean industrial lines."
+    desc: "CNC-machined Grade 5 titanium alloy with polished chamfered edges and brushed side panels for a clean industrial look."
   }
 ];
 
@@ -70,17 +72,24 @@ export default function CinematicLanding() {
   const spacerTextRef = useRef<HTMLDivElement>(null);
   const explodeTextRef = useRef<HTMLDivElement>(null);
   const specTextRef = useRef<HTMLDivElement>(null);
-  
+
   // Interactive States
   const [activeColor, setActiveColor] = useState(colors[0]);
   const [currentChapter, setCurrentChapter] = useState(1);
   const [ecgPath, setEcgPath] = useState("");
 
+  const lenisRef = useRef<Lenis | null>(null);
+  const currentChapterRef = useRef(1);
+
+  const scrollToTop = () => {
+    lenisRef.current?.scrollTo(0);
+  };
+
   const threeStateRef = useRef({
     activeHighlight: "", // "shell-top", "shell-bottom", "gasket", "pcb", "sensors", "coil", "battery", "liner"
     waterMode: 0,
     targetParticleColor: new THREE.Color(0x1F2937),
-    
+
     // Decoupled reactive inputs to prevent WebGL teardown
     mouseX: 0,
     mouseY: 0,
@@ -113,7 +122,7 @@ export default function CinematicLanding() {
       const height = 70;
       const points = [];
       const step = 3;
-      
+
       for (let x = 0; x <= width; x += step) {
         let y = height / 2;
         const phase = (x - (frame * 1.8)) % 110;
@@ -145,6 +154,8 @@ export default function CinematicLanding() {
       smoothWheel: true,
     });
 
+    lenisRef.current = lenis;
+
     lenis.on("scroll", ScrollTrigger.update);
 
     const updateLenis = (time: number) => {
@@ -155,6 +166,7 @@ export default function CinematicLanding() {
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      lenisRef.current = null;
       lenis.destroy();
       gsap.ticker.remove(updateLenis);
     };
@@ -163,13 +175,13 @@ export default function CinematicLanding() {
   // Magnetic Button Interactions
   useEffect(() => {
     const magElements = document.querySelectorAll(".magnetic-btn");
-    
+
     const mouseMoveListeners: { el: HTMLElement; handler: (e: MouseEvent) => void }[] = [];
     const mouseLeaveListeners: { el: HTMLElement; handler: () => void }[] = [];
 
     magElements.forEach((el) => {
       const htmlEl = el as HTMLElement;
-      
+
       const onMouseMove = (e: MouseEvent) => {
         const rect = htmlEl.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
@@ -177,7 +189,7 @@ export default function CinematicLanding() {
         const distanceX = e.clientX - centerX;
         const distanceY = e.clientY - centerY;
         const dist = Math.hypot(distanceX, distanceY);
-        
+
         if (dist < 120) {
           gsap.to(htmlEl, {
             x: distanceX * 0.32,
@@ -277,7 +289,7 @@ export default function CinematicLanding() {
     pmremGenerator.compileEquirectangularShader();
 
     const envScene = new THREE.Scene();
-    
+
     // Ambient backdrops
     const envBgGeom = new THREE.SphereGeometry(14, 32, 32);
     const envBgMat = new THREE.MeshBasicMaterial({ color: 0x010101, side: THREE.BackSide });
@@ -377,7 +389,7 @@ export default function CinematicLanding() {
     if (pcbCtx) {
       pcbCtx.fillStyle = "#0b1c0f"; // Forest green PCB
       pcbCtx.fillRect(0, 0, 1024, 256);
-      
+
       // Fine circuit grid overlay
       pcbCtx.strokeStyle = "rgba(25, 65, 30, 0.6)";
       pcbCtx.lineWidth = 1;
@@ -387,7 +399,7 @@ export default function CinematicLanding() {
       for (let y = 0; y < 256; y += 16) {
         pcbCtx.beginPath(); pcbCtx.moveTo(0, y); pcbCtx.lineTo(1024, y); pcbCtx.stroke();
       }
-      
+
       // Draw procedural circuit copper traces
       pcbCtx.strokeStyle = "rgba(198, 169, 114, 0.7)";
       pcbCtx.lineWidth = 1.5;
@@ -417,7 +429,7 @@ export default function CinematicLanding() {
     // --- GEOMETRY CONSTRUCTION (TRUE INDUSTRIAL EXPLODED ARCHITECTURE) ---
 
     // 1. OUTER BLACK TITANIUM SHELL (Split vertically along Y=0 into Top and Bottom halves)
-    
+
     // Top Shell Profile (from y=0 to y=0.19)
     const topShellPoints: THREE.Vector2[] = [];
     topShellPoints.push(new THREE.Vector2(1.44, 0.0));
@@ -432,7 +444,7 @@ export default function CinematicLanding() {
 
     const topShellGeom = new THREE.LatheGeometry(topShellPoints, 128);
     const outerMat = new THREE.MeshPhysicalMaterial({
-      color: colors[0].materialColor, 
+      color: colors[0].materialColor,
       metalness: colors[0].metalness,
       roughness: colors[0].roughness,
       clearcoat: 0.38,
@@ -450,7 +462,7 @@ export default function CinematicLanding() {
       transparent: true,
       opacity: 1.0,
     });
-    
+
     const topShellMesh = new THREE.Mesh(topShellGeom, outerMat);
     const topShellGroup = new THREE.Group();
     topShellGroup.add(topShellMesh);
@@ -503,7 +515,7 @@ export default function CinematicLanding() {
       transparent: true,
       opacity: 1.0,
     });
-    
+
     // Top antenna band
     const ant2 = new THREE.Mesh(antennaGeom, antennaMat);
     ant2.position.y = 0.09;
@@ -618,11 +630,11 @@ export default function CinematicLanding() {
 
     const sensorFrameGeom = new THREE.BoxGeometry(0.13, 0.04, 0.13);
     const sensorFrameMat = new THREE.MeshStandardMaterial({ color: 0x181818, metalness: 0.9, roughness: 0.25 });
-    
+
     // Sensor Package 1
     const sensorBody1 = new THREE.Mesh(sensorFrameGeom, sensorFrameMat);
     sensorGroup1.add(sensorBody1);
-    
+
     // Sensor Package 2
     const sensorBody2 = new THREE.Mesh(sensorFrameGeom, sensorFrameMat);
     sensorGroup2.add(sensorBody2);
@@ -643,7 +655,7 @@ export default function CinematicLanding() {
     // Lens cover sapphire glass
     const lensGeom = new THREE.CylinderGeometry(0.05, 0.05, 0.004, 16);
     const lensMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.01, transmission: 0.98, transparent: true });
-    
+
     const lens1 = new THREE.Mesh(lensGeom, lensMat);
     lens1.position.y = 0.024;
     sensorGroup1.add(lens1);
@@ -711,9 +723,9 @@ export default function CinematicLanding() {
       clearcoat: 0.5,
       clearcoatRoughness: 0.2,
       envMapIntensity: 1.8,
-      map: markingsTex, 
-      bumpMap: ribTex, 
-      bumpScale: 0.0008, 
+      map: markingsTex,
+      bumpMap: ribTex,
+      bumpScale: 0.0008,
       side: THREE.DoubleSide,
       transparent: true,
       opacity: 1.0,
@@ -748,7 +760,7 @@ export default function CinematicLanding() {
     // Micro window bezel details
     const bezelGeom = new THREE.CylinderGeometry(0.088, 0.088, 0.022, 32);
     const bezelMat = new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.9, roughness: 0.15 });
-    
+
     const b1 = new THREE.Mesh(bezelGeom, bezelMat);
     b1.position.set(0, -1.389, 0);
     b1.rotation.x = Math.PI / 2;
@@ -811,7 +823,7 @@ export default function CinematicLanding() {
     }
     const dustGeom = new THREE.BufferGeometry();
     dustGeom.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
-    
+
     const dustMat = new THREE.PointsMaterial({
       size: 0.09,
       color: 0xcccccc,
@@ -845,7 +857,7 @@ export default function CinematicLanding() {
     }
     const teleGeom = new THREE.BufferGeometry();
     teleGeom.setAttribute("position", new THREE.BufferAttribute(telePositions, 3));
-    
+
     const teleMat = new THREE.PointsMaterial({
       size: 0.038,
       color: 0x1f2937,
@@ -901,15 +913,31 @@ export default function CinematicLanding() {
     const updateElbowLine = (lineId: string, labelId: string, mesh: THREE.Object3D, active: boolean, side: "left" | "right") => {
       const lineEl = document.getElementById(lineId);
       const labelEl = document.getElementById(labelId);
-      if (!lineEl || !labelEl) return;
+      const labelMobileEl = document.getElementById(labelId + "-mobile");
 
       if (!active) {
-        lineEl.setAttribute("stroke-dashoffset", "1000");
-        lineEl.style.opacity = "0";
-        labelEl.style.opacity = "0";
-        labelEl.style.transform = `scale(0.94)`;
+        if (lineEl) {
+          lineEl.setAttribute("stroke-dashoffset", "1000");
+          lineEl.style.opacity = "0";
+        }
+        if (labelEl) {
+          labelEl.style.opacity = "0";
+          labelEl.style.transform = `scale(0.94)`;
+        }
+        if (labelMobileEl) {
+          labelMobileEl.style.opacity = "0";
+          labelMobileEl.style.transform = "translateY(15px) scale(0.96)";
+        }
         return;
       }
+
+      // Update mobile label if it exists
+      if (labelMobileEl) {
+        labelMobileEl.style.opacity = "1";
+        labelMobileEl.style.transform = "translateY(0) scale(1)";
+      }
+
+      if (!lineEl || !labelEl) return;
 
       mesh.getWorldPosition(pos);
       pos.project(camera);
@@ -925,13 +953,13 @@ export default function CinematicLanding() {
       lineEl.setAttribute("d", `M ${anchorX} ${anchorY} L ${midX} ${anchorY} L ${x} ${y}`);
       lineEl.style.opacity = "1";
       lineEl.setAttribute("stroke-dashoffset", "0");
-      
+
       labelEl.style.opacity = "1";
       labelEl.style.transform = "scale(1)";
     };
 
     // --- GSAP TIMELINE SYSTEM WITH LERP MOTION PHYSICS AND CHAPTER CONTROLS ---
-    
+
     // Unified animation parameters targeted by GSAP
     const animState = {
       shellSplit: 0,
@@ -940,7 +968,7 @@ export default function CinematicLanding() {
       sensorGlow: 0,
       batteryRotate: 0,
       coilExpand: 0,
-      
+
       ringRotationX: 0.32,
       ringRotationY: 0.4,
       ringPositionX: 0,
@@ -964,54 +992,60 @@ export default function CinematicLanding() {
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
-        end: "+=1400%",
+        end: "+=1600%",
         scrub: 1.8,
         pin: true,
+      },
+      onUpdate: function() {
+        const time = this.time();
+        let chapter = 1;
+        let particleColor = 0x1F2937;
+
+        if (time >= 18.0) {
+          chapter = 10;
+          particleColor = 0x1F2937;
+        } else if (time >= 16.0) {
+          chapter = 9;
+          particleColor = 0xC6A972;
+        } else if (time >= 14.0) {
+          chapter = 8;
+          particleColor = 0x1F2937;
+        } else if (time >= 12.0) {
+          chapter = 7;
+          particleColor = threeStateRef.current.targetColor;
+        } else if (time >= 10.0) {
+          chapter = 6;
+          particleColor = 0x3B82F6;
+        } else if (time >= 8.0) {
+          chapter = 5;
+          particleColor = 0xF59E0B;
+        } else if (time >= 6.0) {
+          chapter = 4;
+          particleColor = 0xEF4444;
+        } else if (time >= 4.0) {
+          chapter = 3;
+          particleColor = 0x3B82F6;
+        } else if (time >= 2.0) {
+          chapter = 2;
+          particleColor = 0x3B82F6;
+        } else {
+          chapter = 1;
+          particleColor = 0x1F2937;
+        }
+
+        threeStateRef.current.targetParticleColor.setHex(particleColor);
+
+        if (chapter !== currentChapterRef.current) {
+          currentChapterRef.current = chapter;
+          setCurrentChapter(chapter);
+        }
       }
     });
 
-    tl.duration(18.0);
-
-    // CHAPTER TRIGGERS FOR 9 SECTIONS
-    tl.call(() => {
-      setCurrentChapter(1);
-      threeStateRef.current.targetParticleColor.setHex(0x1F2937);
-    }, [], 0);
-    tl.call(() => {
-      setCurrentChapter(2);
-      threeStateRef.current.targetParticleColor.setHex(0x3B82F6);
-    }, [], 2.0);
-    tl.call(() => {
-      setCurrentChapter(3);
-      threeStateRef.current.targetParticleColor.setHex(0x3B82F6);
-    }, [], 4.0);
-    tl.call(() => {
-      setCurrentChapter(4);
-      threeStateRef.current.targetParticleColor.setHex(0xEF4444);
-    }, [], 6.0);
-    tl.call(() => {
-      setCurrentChapter(5);
-      threeStateRef.current.targetParticleColor.setHex(0xF59E0B);
-    }, [], 8.0);
-    tl.call(() => {
-      setCurrentChapter(6);
-      threeStateRef.current.targetParticleColor.setHex(0x3B82F6);
-    }, [], 10.0);
-    tl.call(() => {
-      setCurrentChapter(7);
-      const state = threeStateRef.current;
-      state.targetParticleColor.setHex(state.targetColor);
-    }, [], 12.0);
-    tl.call(() => {
-      setCurrentChapter(8);
-      threeStateRef.current.targetParticleColor.setHex(0x1F2937);
-    }, [], 14.0);
-    tl.call(() => {
-      setCurrentChapter(9);
-      threeStateRef.current.targetParticleColor.setHex(0xC6A972);
-    }, [], 16.0);
+    tl.duration(20.0);
 
     // SECTION 1: Cinematic Hero (0 -> 2.0)
+    tl.set(threeStateRef.current, { activeHighlight: "" }, 0.0);
     tl.to(animState, {
       ringRotationY: Math.PI * 0.8,
       ringRotationX: 0.22,
@@ -1143,7 +1177,19 @@ export default function CinematicLanding() {
       ease: "power2.inOut"
     }, 14.0);
 
-    // SECTION 9: FAQ + CTA (16.0 -> 18.0)
+    // SECTION 9: Reviews (16.0 -> 18.0)
+    tl.to(animState, {
+      ringPositionX: -1.2,
+      ringPositionY: 0,
+      ringScale: 0.50,
+      ringRotationX: 0.2, 
+      ringRotationY: Math.PI * 10.5,
+      cameraFOV: 14.5,
+      duration: 2.0,
+      ease: "power2.inOut"
+    }, 16.0);
+
+    // SECTION 10: FAQ + CTA (18.0 -> 20.0)
     tl.to(animState, {
       shellSplit: 0,
       gasketExpand: 0,
@@ -1155,13 +1201,13 @@ export default function CinematicLanding() {
       ringPositionX: 0,
       ringPositionY: 0.8,
       ringRotationX: 0.32,
-      ringRotationY: Math.PI * 11.0,
+      ringRotationY: Math.PI * 11.5,
       cameraFOV: 14.0,
       duration: 2.0,
       ease: "power2.inOut"
-    }, 16.0);
+    }, 18.0);
 
-    tl.set(threeStateRef.current, { activeHighlight: "" }, 16.0);
+    tl.set(threeStateRef.current, { activeHighlight: "" }, 18.0);
 
     // --- RENDER LOOP AND PHYSICS EMULATION ---
     const pos = new THREE.Vector3();
@@ -1187,7 +1233,7 @@ export default function CinematicLanding() {
       teleMat.color.lerp(state.targetParticleColor, 0.05);
 
       // --- APPLY GSAP ANIMATION VALUE TRANSFORMS DIRECTLY ---
-      
+
       // Outer shell halves slide vertically
       topShellGroup.position.y = animState.shellSplit * 0.45;
       bottomShellGroup.position.y = -animState.shellSplit * 0.45;
@@ -1251,7 +1297,7 @@ export default function CinematicLanding() {
       const timeVal = Date.now() * 0.0006;
       const driftX = Math.sin(timeVal * 0.4) * 0.02 + Math.cos(timeVal * 0.7) * 0.01;
       const driftY = Math.cos(timeVal * 0.3) * 0.02 + Math.sin(timeVal * 0.6) * 0.01;
-      
+
       camera.position.x = animState.cameraX + driftX;
       camera.position.y = animState.cameraY + driftY;
       camera.position.z = animState.cameraZ;
@@ -1293,7 +1339,7 @@ export default function CinematicLanding() {
       // 6. Layered Particle Drift
       const dustPosArr = dustGeom.attributes.position.array as Float32Array;
       for (let i = 0; i < dustCount; i++) {
-        dustPosArr[i * 3 + 1] -= dustSpeeds[i]; 
+        dustPosArr[i * 3 + 1] -= dustSpeeds[i];
         if (dustPosArr[i * 3 + 1] < -4) {
           dustPosArr[i * 3 + 1] = 4;
           dustPosArr[i * 3] = (Math.random() - 0.5) * 14;
@@ -1334,10 +1380,15 @@ export default function CinematicLanding() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
-      
-      // Cleanup GSAP and ScrollTriggers to prevent leaks on hot reload
+
+      // Cleanup GSAP and ScrollTriggers to prevent leaks and fix Next.js back navigation layout breakage
+      if (tl.scrollTrigger) {
+        tl.scrollTrigger.kill(true); // Passing true reverts all DOM changes (pinning, etc.)
+      }
       tl.kill();
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      ScrollTrigger.getAll().forEach(t => {
+        t.kill(true);
+      });
 
       topShellGeom.dispose();
       bottomShellGeom.dispose();
@@ -1401,8 +1452,8 @@ export default function CinematicLanding() {
 
     // Dynamic light sweep reflection across anodized casing
     if (sweepLightRef.current) {
-      gsap.fromTo(sweepLightRef.current.position, 
-        { x: -8 }, 
+      gsap.fromTo(sweepLightRef.current.position,
+        { x: -8 },
         { x: 8, duration: 1.5, ease: "power2.inOut" }
       );
     }
@@ -1410,33 +1461,33 @@ export default function CinematicLanding() {
 
   return (
     <div ref={containerRef} className="relative w-full bg-black text-white selection:bg-accent selection:text-black h-screen overflow-hidden">
-      
+
       {/* STICKY RENDER & NARRATIVE CANVAS */}
       <div className="sticky top-0 left-0 w-full h-screen overflow-hidden">
-        
+
         {/* WEBGL CANVAS */}
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block z-10 will-change-transform" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_15%,rgba(0,0,0,0.96)_85%)] pointer-events-none z-20" />
-        
+
         {/* DYNAMIC AMBIENT BACKGROUND GLOW */}
-        <div 
-          className="absolute inset-0 transition-all duration-[2000ms] ease-out pointer-events-none z-0" 
+        <div
+          className="absolute inset-0 transition-all duration-[2000ms] ease-out pointer-events-none z-0"
           style={{
-            background: 
+            background:
               currentChapter === 1 ? "radial-gradient(circle at center, rgba(31, 41, 55, 0.22) 0%, rgba(0, 0, 0, 1) 80%)" :
-              currentChapter === 2 ? "radial-gradient(circle at center, rgba(30, 41, 59, 0.25) 0%, rgba(0, 0, 0, 1) 85%)" :
-              currentChapter === 3 ? "radial-gradient(circle at center, rgba(30, 41, 59, 0.25) 0%, rgba(0, 0, 0, 1) 85%)" :
-              currentChapter === 4 ? "radial-gradient(circle at center, rgba(59, 130, 246, 0.18) 0%, rgba(0, 0, 0, 1) 75%)" :
-              currentChapter === 5 ? "radial-gradient(circle at center, rgba(245, 158, 11, 0.16) 0%, rgba(0, 0, 0, 1) 80%)" :
-              currentChapter === 6 ? "radial-gradient(circle at center, rgba(59, 130, 246, 0.14) 0%, rgba(0, 0, 0, 1) 80%)" :
-              currentChapter === 7 ? `radial-gradient(circle at center, rgba(${activeColor.id === "gold" ? "198, 169, 114, 0.18" : "55, 65, 81, 0.2"}) 0%, rgba(0, 0, 0, 1) 80%)` :
-              currentChapter === 8 ? "radial-gradient(circle at center, rgba(31, 41, 55, 0.18) 0%, rgba(0, 0, 0, 1) 80%)" :
-              "radial-gradient(circle at center, rgba(198, 169, 114, 0.2) 0%, rgba(0, 0, 0, 1) 85%)"
+                currentChapter === 2 ? "radial-gradient(circle at center, rgba(30, 41, 59, 0.25) 0%, rgba(0, 0, 0, 1) 85%)" :
+                  currentChapter === 3 ? "radial-gradient(circle at center, rgba(30, 41, 59, 0.25) 0%, rgba(0, 0, 0, 1) 85%)" :
+                    currentChapter === 4 ? "radial-gradient(circle at center, rgba(59, 130, 246, 0.18) 0%, rgba(0, 0, 0, 1) 75%)" :
+                      currentChapter === 5 ? "radial-gradient(circle at center, rgba(245, 158, 11, 0.16) 0%, rgba(0, 0, 0, 1) 80%)" :
+                        currentChapter === 6 ? "radial-gradient(circle at center, rgba(59, 130, 246, 0.14) 0%, rgba(0, 0, 0, 1) 80%)" :
+                          currentChapter === 7 ? `radial-gradient(circle at center, rgba(${activeColor.id === "gold" ? "198, 169, 114, 0.18" : "55, 65, 81, 0.2"}) 0%, rgba(0, 0, 0, 1) 80%)` :
+                            currentChapter === 8 ? "radial-gradient(circle at center, rgba(31, 41, 55, 0.18) 0%, rgba(0, 0, 0, 1) 80%)" :
+                              "radial-gradient(circle at center, rgba(198, 169, 114, 0.2) 0%, rgba(0, 0, 0, 1) 85%)"
           }}
         />
 
         {/* SVG INTERACTION ELBOW PATHS */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-40">
+        <svg className="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-40">
           <path id="line-shell-top" fill="none" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="1.2" strokeDasharray="1000" strokeDashoffset="1000" className="transition-all duration-300" />
           <path id="line-shell-bottom" fill="none" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="1.2" strokeDasharray="1000" strokeDashoffset="1000" className="transition-all duration-300" />
           <path id="line-gasket" fill="none" stroke="rgba(255, 255, 255, 0.35)" strokeWidth="1.2" strokeDasharray="1000" strokeDashoffset="1000" className="transition-all duration-300" />
@@ -1449,13 +1500,13 @@ export default function CinematicLanding() {
 
         {/* ENGINEERING HUD LABELS (Three.js-referenced by ID) */}
         <div className="absolute inset-0 w-full h-full pointer-events-none z-30 overflow-hidden">
-          
+
           {/* Left Aligned Columns */}
-          <div className="absolute top-[20%] left-6 md:left-20 flex flex-col gap-12 max-w-[320px]">
-            
-            <div 
-              id="label-shell-top" 
-              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
+          <div className="hidden md:flex absolute top-[15%] sm:top-[20%] left-4 sm:left-6 md:left-20 flex-col gap-6 sm:gap-12 w-[calc(100%-2rem)] sm:w-auto max-w-[280px] sm:max-w-[320px]">
+
+            <div
+              id="label-shell-top"
+              className="bg-black/65 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
@@ -1465,9 +1516,9 @@ export default function CinematicLanding() {
               <p className="text-xs text-muted leading-relaxed font-light mt-2">Grade 5 titanium hemisphere with machined antenna isolator slots and DLC coating.</p>
             </div>
 
-            <div 
-              id="label-shell-bottom" 
-              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
+            <div
+              id="label-shell-bottom"
+              className="bg-black/65 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
@@ -1477,9 +1528,9 @@ export default function CinematicLanding() {
               <p className="text-xs text-muted leading-relaxed font-light mt-2">Seamless CNC mating line with laser-etched alignment markers.</p>
             </div>
 
-            <div 
-              id="label-gasket" 
-              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
+            <div
+              id="label-gasket"
+              className="bg-black/65 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-pulse" />
@@ -1489,9 +1540,9 @@ export default function CinematicLanding() {
               <p className="text-xs text-muted leading-relaxed font-light mt-2">Hermetically sealed dual-layer gaskets rated for 10 ATM / 100m depth.</p>
             </div>
 
-            <div 
-              id="label-pcb" 
-              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
+            <div
+              id="label-pcb"
+              className="bg-black/65 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
@@ -1504,11 +1555,11 @@ export default function CinematicLanding() {
           </div>
 
           {/* Right Aligned Columns */}
-          <div className="absolute top-[20%] right-6 md:right-20 flex flex-col gap-12 max-w-[320px] text-right items-end">
-            
-            <div 
-              id="label-sensors" 
-              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
+          <div className="hidden md:flex absolute top-[15%] sm:top-[20%] right-4 sm:right-6 md:right-20 flex-col gap-6 sm:gap-12 w-[calc(100%-2rem)] sm:w-auto max-w-[280px] sm:max-w-[320px] text-right items-end">
+
+            <div
+              id="label-sensors"
+              className="bg-black/65 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
@@ -1518,9 +1569,9 @@ export default function CinematicLanding() {
               <p className="text-xs text-muted leading-relaxed font-light mt-2 text-right">Triple PPG optical emitters with sapphire glass lenses for heart-rate and sleep tracking.</p>
             </div>
 
-            <div 
-              id="label-battery" 
-              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
+            <div
+              id="label-battery"
+              className="bg-black/65 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
@@ -1530,9 +1581,9 @@ export default function CinematicLanding() {
               <p className="text-xs text-muted leading-relaxed font-light mt-2 text-right">3.8V curved lithium-polymer arc. Up to 7 days of continuous monitoring.</p>
             </div>
 
-            <div 
-              id="label-coil" 
-              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
+            <div
+              id="label-coil"
+              className="bg-black/65 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
@@ -1542,9 +1593,9 @@ export default function CinematicLanding() {
               <p className="text-xs text-muted leading-relaxed font-light mt-2 text-right">Triple-loop copper winding for high-efficiency magnetic alignment charging.</p>
             </div>
 
-            <div 
-              id="label-liner" 
-              className="bg-black/65 backdrop-blur-md p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
+            <div
+              id="label-liner"
+              className="bg-black/65 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto flex flex-col items-end shadow-2xl"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
@@ -1556,11 +1607,123 @@ export default function CinematicLanding() {
 
           </div>
 
+          {/* MOBILE RESPONSIVE HUD CARDS (Visible only on mobile/tablet) */}
+          <div className={`md:hidden absolute inset-0 z-30 flex flex-col items-center justify-center px-4 transition-opacity duration-500 pointer-events-none ${currentChapter === 2 ? "opacity-100" : "opacity-0"}`}>
+            <div className="relative w-full max-w-sm h-[180px] pointer-events-none">
+              {/* Cards stacked on top of each other */}
+              
+              {/* 1. Top Casing */}
+              <div
+                id="label-shell-top-mobile"
+                className="absolute inset-0 bg-black/80 backdrop-blur-lg p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl flex flex-col justify-center"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                  <span className="text-[9px] font-bold text-accent tracking-[0.2em] uppercase">TITANIUM SHELL</span>
+                </div>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Top Casing</h4>
+                <p className="text-xs text-muted leading-relaxed font-light mt-1">Grade 5 titanium hemisphere with machined antenna isolator slots and DLC coating.</p>
+              </div>
+
+              {/* 2. Bottom Casing */}
+              <div
+                id="label-shell-bottom-mobile"
+                className="absolute inset-0 bg-black/80 backdrop-blur-lg p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl flex flex-col justify-center"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                  <span className="text-[9px] font-bold text-accent tracking-[0.2em] uppercase">TITANIUM SHELL</span>
+                </div>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Bottom Casing</h4>
+                <p className="text-xs text-muted leading-relaxed font-light mt-1">Seamless CNC mating line with laser-etched alignment markers.</p>
+              </div>
+
+              {/* 3. Silicone Gasket */}
+              <div
+                id="label-gasket-mobile"
+                className="absolute inset-0 bg-black/80 backdrop-blur-lg p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl flex flex-col justify-center"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-pulse" />
+                  <span className="text-[9px] font-bold text-neutral-400 tracking-[0.2em] uppercase">WATERPROOF SEAL</span>
+                </div>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Silicone Gasket</h4>
+                <p className="text-xs text-muted leading-relaxed font-light mt-1">Hermetically sealed dual-layer gaskets rated for 10 ATM / 100m depth.</p>
+              </div>
+
+              {/* 4. Flexible Motherboard */}
+              <div
+                id="label-pcb-mobile"
+                className="absolute inset-0 bg-black/80 backdrop-blur-lg p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl flex flex-col justify-center"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                  <span className="text-[9px] font-bold text-green-400 tracking-[0.2em] uppercase">SENSOR ARCHITECTURE</span>
+                </div>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Flexible Motherboard</h4>
+                <p className="text-xs text-muted leading-relaxed font-light mt-1">Curved 3D flex substrate powering the Owl Neural Core with ARM Cortex-M4.</p>
+              </div>
+
+              {/* 5. Biometric Telemetry */}
+              <div
+                id="label-sensors-mobile"
+                className="absolute inset-0 bg-black/80 backdrop-blur-lg p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl flex flex-col justify-center"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-[9px] font-bold text-red-500 tracking-[0.2em] uppercase">AI SENSOR ARRAY</span>
+                </div>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Biometric Telemetry</h4>
+                <p className="text-xs text-muted leading-relaxed font-light mt-1">Triple PPG optical emitters with sapphire glass lenses for heart-rate and sleep tracking.</p>
+              </div>
+
+              {/* 6. Solid-State Battery */}
+              <div
+                id="label-battery-mobile"
+                className="absolute inset-0 bg-black/80 backdrop-blur-lg p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl flex flex-col justify-center"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="text-[9px] font-bold text-amber-400 tracking-[0.2em] uppercase">ENERGY CORE</span>
+                </div>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Solid-State Battery</h4>
+                <p className="text-xs text-muted leading-relaxed font-light mt-1">3.8V curved lithium-polymer arc. Up to 7 days of continuous monitoring.</p>
+              </div>
+
+              {/* 7. Induction Coil */}
+              <div
+                id="label-coil-mobile"
+                className="absolute inset-0 bg-black/80 backdrop-blur-lg p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl flex flex-col justify-center"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                  <span className="text-[9px] font-bold text-orange-500 tracking-[0.2em] uppercase">WIRELESS CHARGING</span>
+                </div>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Induction Coil</h4>
+                <p className="text-xs text-muted leading-relaxed font-light mt-1">Triple-loop copper winding for high-efficiency magnetic alignment charging.</p>
+              </div>
+
+              {/* 8. Inner Comfort Liner */}
+              <div
+                id="label-liner-mobile"
+                className="absolute inset-0 bg-black/80 backdrop-blur-lg p-5 rounded-2xl border border-white/10 transition-all duration-500 opacity-0 pointer-events-auto shadow-2xl flex flex-col justify-center"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                  <span className="text-[9px] font-bold text-accent tracking-[0.2em] uppercase">COMFORT RESIN</span>
+                </div>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider font-heading">Inner Comfort Liner</h4>
+                <p className="text-xs text-muted leading-relaxed font-light mt-1">Hypoallergenic resin with micro comfort ridges. Ergonomic all-day wear.</p>
+              </div>
+
+            </div>
+          </div>
+
         </div>
 
         {/* PINNED NARRATIVE CHAPTER OVERLAYS */}
         <div className="absolute inset-0 w-full h-full pointer-events-none z-30 flex items-center justify-center">
-          
+
           {/* Section 1: Cinematic Hero */}
           <HeroSection currentChapter={currentChapter} introTextRef={introTextRef} />
 
@@ -1578,62 +1741,100 @@ export default function CinematicLanding() {
           <AppConnectivity currentChapter={currentChapter} />
 
           {/* Section 7: Premium Materials & Color Customizer */}
-          <div className={`overlay-customizer absolute inset-0 w-full h-full flex items-center justify-start px-8 md:px-24 transition-all duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] z-40 safe-text-gradient ${
-            currentChapter === 7 ? "opacity-100 pointer-events-auto translate-x-0" : "opacity-0 pointer-events-none -translate-x-12"
-          }`}>
-            <div className="max-w-[480px] w-full text-left flex flex-col gap-8">
-              <div>
-                <span className="text-[11px] font-bold tracking-[0.25em] text-[#c6a972] uppercase transition-all duration-[1000ms] delay-75">
-                  ALL-DAY COMFORT
-                </span>
-                <h2 className="text-4xl md:text-5xl font-semibold tracking-tighter text-white leading-tight text-shadow-cinematic mt-4 transition-all duration-[1200ms] delay-150">
-                  GRADE 5<br />TITANIUM.
-                </h2>
-                <p className="text-premium-body text-shadow-cinematic mt-6 transition-all duration-[1200ms] delay-300">
-                  CNC-machined from aerospace-grade titanium with an ultra-lightweight comfort resin inner shell. Designed for 24/7 wear and complete 10 ATM water resistance.
-                </p>
-              </div>
+          <AnimatePresence>
+            {currentChapter === 7 && (
+              <motion.div 
+                initial={{ opacity: 0, x: -48 }}
+                animate={{ opacity: 1, x: 0, transition: { staggerChildren: 0.15, delayChildren: 0.1, duration: 1.2, ease: [0.22, 1, 0.36, 1] } }}
+                exit={{ opacity: 0, x: -48, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }}
+                className="overlay-customizer absolute inset-0 w-full h-full flex items-center justify-start px-4 sm:px-8 md:px-24 z-40 safe-text-gradient pointer-events-auto"
+              >
+                <motion.div className="max-w-[480px] w-full text-left flex flex-col gap-6 sm:gap-8 pointer-events-auto">
+                  <motion.div
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }}
+                  >
+                    <span className="text-[11px] font-bold tracking-[0.25em] text-[#c6a972] uppercase">
+                      ALL-DAY COMFORT
+                    </span>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tighter text-white leading-tight text-shadow-cinematic mt-3 sm:mt-4">
+                      GRADE 5<br />TITANIUM.
+                    </h2>
+                    <p className="text-premium-body text-shadow-cinematic mt-6">
+                      CNC-machined from aerospace-grade titanium with an ultra-lightweight comfort resin inner shell. Designed for 24/7 wear and complete 10 ATM water resistance.
+                    </p>
+                  </motion.div>
 
-              <div className="bg-black/40 backdrop-blur-md px-7 py-5 rounded-2xl border border-white/5 shadow-2xl transition-all duration-[1200ms] delay-150">
-                <p className="text-sm text-white/90 leading-relaxed font-light text-shadow-cinematic">
-                  {activeColor.desc}
-                </p>
-              </div>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }}
+                    className="bg-black/40 backdrop-blur-md px-7 py-5 rounded-2xl border border-white/5 shadow-2xl"
+                  >
+                    <p className="text-sm text-white/90 leading-relaxed font-light text-shadow-cinematic">
+                      {activeColor.desc}
+                    </p>
+                  </motion.div>
 
-              <div className="flex flex-col items-start gap-4 transition-all duration-[1200ms] delay-300">
-                <div className="flex gap-4 p-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 pointer-events-auto shadow-xl">
-                  {colors.map((color) => {
-                    const isActive = activeColor.id === color.id;
-                    return (
-                      <button
-                        key={color.id}
-                        onClick={() => handleColorChange(color)}
-                        className="group relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 hover:scale-105"
-                        style={{ backgroundColor: color.value }}
-                        title={color.name}
-                      >
-                        <span 
-                          className={`absolute -inset-1.5 rounded-full border-2 transition-all duration-500 scale-90 opacity-0 ${
-                            isActive ? "border-accent scale-100 opacity-100" : "border-white/20 group-hover:scale-95 group-hover:opacity-40"
-                          }`}
-                        />
-                        {isActive && <Check size={16} className="text-black stroke-[3]" />}
-                      </button>
-                    );
-                  })}
-                </div>
-                <span className="text-[11px] font-bold tracking-widest text-accent uppercase pl-2 text-shadow-cinematic">{activeColor.name}</span>
-              </div>
-            </div>
-          </div>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }}
+                    className="flex flex-col items-start gap-4"
+                  >
+                    <div className="flex gap-4 p-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 pointer-events-auto shadow-xl">
+                      {colors.map((color) => {
+                        const isActive = activeColor.id === color.id;
+                        return (
+                          <button
+                            key={color.id}
+                            onClick={() => handleColorChange(color)}
+                            className="group relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 hover:scale-105"
+                            style={{ backgroundColor: color.value }}
+                            title={color.name}
+                          >
+                            <span
+                              className={`absolute -inset-1.5 rounded-full border-2 transition-all duration-500 scale-90 opacity-0 ${isActive ? "border-accent scale-100 opacity-100" : "border-white/20 group-hover:scale-95 group-hover:opacity-40"
+                                }`}
+                            />
+                            {isActive && <Check size={16} className="text-black stroke-[3]" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <span className="text-[11px] font-bold tracking-widest text-accent uppercase pl-2 text-shadow-cinematic">{activeColor.name}</span>
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Section 8: How It Works */}
           <HowItWorks currentChapter={currentChapter} />
 
-          {/* Section 9: FAQ + CTA */}
+          {/* Section 9: Reviews */}
+          <ReviewsOverlay currentChapter={currentChapter} />
+
+          {/* Section 10: FAQ & CTA */}
           <FaqCta currentChapter={currentChapter} />
 
         </div>
+
+        {/* Scroll to Top Button */}
+        <AnimatePresence>
+          {currentChapter > 1 && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={scrollToTop}
+              className="absolute bottom-6 right-6 md:bottom-8 md:right-8 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/60 text-white backdrop-blur-md transition-all duration-300 hover:border-accent hover:text-accent shadow-premium pointer-events-auto cursor-pointer"
+              aria-label="Scroll to top"
+            >
+              <ArrowUp size={20} className="stroke-[2.5]" />
+            </motion.button>
+          )}
+        </AnimatePresence>
 
       </div>
 
