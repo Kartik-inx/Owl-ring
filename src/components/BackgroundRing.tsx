@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import * as THREE from "three";
 
 export default function BackgroundRing() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
+    if (pathname === "/") return;
     if (!canvasRef.current) return;
 
     const width = window.innerWidth;
@@ -256,7 +259,7 @@ export default function BackgroundRing() {
     // 6. COILS
     const coilGroup = new THREE.Group();
     const coilMat = new THREE.MeshPhysicalMaterial({ color: 0xd47326, metalness: 0.98, roughness: 0.18, envMapIntensity: 2.0, transparent: true });
-    for (let yOffset of [-0.07, 0, 0.07]) {
+    for (const yOffset of [-0.07, 0, 0.07]) {
       const coilTorus = new THREE.TorusGeometry(1.408, 0.012, 8, 64);
       const coilMesh = new THREE.Mesh(coilTorus, coilMat);
       coilMesh.rotation.x = Math.PI / 2; coilMesh.position.y = yOffset;
@@ -426,12 +429,13 @@ export default function BackgroundRing() {
       envTarget.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [pathname]);
+
+  if (pathname === "/") return null;
 
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none z-[-1] overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(31,41,55,0.15)_0%,rgba(0,0,0,1)_85%)] pointer-events-none z-0" />
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block z-10 opacity-70" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(31,41,55,0.08)_0%,rgba(0,0,0,1)_85%)] pointer-events-none z-0" />
     </div>
   );
 }
