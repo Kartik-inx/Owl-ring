@@ -62,6 +62,120 @@ const colors = [
   }
 ];
 
+const internalComponents = [
+  { name: "Top Titanium Casing", category: "TITANIUM SHELL", desc: "Grade 5 titanium hemisphere with machined antenna isolator slots and DLC coating." },
+  { name: "Bottom Titanium Casing", category: "TITANIUM SHELL", desc: "Seamless CNC mating line with laser-etched alignment markers." },
+  { name: "Silicone Gasket", category: "WATERPROOF SEAL", desc: "Hermetically sealed dual-layer gaskets rated for 10 ATM / 100m depth." },
+  { name: "Flexible Motherboard", category: "SENSOR ARCHITECTURE", desc: "Curved 3D flex substrate powering the Owl Neural Core with ARM Cortex-M4." },
+  { name: "Biometric Telemetry", category: "AI SENSOR ARRAY", desc: "Triple PPG optical emitters with sapphire glass lenses for heart-rate and sleep tracking." },
+  { name: "Solid-State Battery", category: "ENERGY CORE", desc: "3.8V curved lithium-polymer arc. Up to 7 days of continuous monitoring." },
+  { name: "Induction Coil", category: "WIRELESS CHARGING", desc: "Triple-loop copper winding for high-efficiency magnetic alignment charging." },
+  { name: "Inner Comfort Liner", category: "COMFORT RESIN", desc: "Hypoallergenic resin with micro comfort ridges. Ergonomic all-day wear." }
+];
+
+function MobileComponentsGrid() {
+  return (
+    <section className="relative w-full py-16 px-4 sm:px-6 z-20 bg-black/60 pointer-events-auto">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-10">
+          <span className="text-[11px] font-bold tracking-[0.25em] text-accent uppercase">
+            EXPLODED ARCHITECTURE
+          </span>
+          <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-2">
+            THE 8 INNER SYSTEM LAYERS
+          </h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {internalComponents.map((comp, i) => (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, delay: i * 0.05 } }}
+              viewport={{ once: true, margin: "-50px" }}
+              key={i}
+              className="bg-neutral-900/40 backdrop-blur-md border border-white/5 p-6 rounded-2xl flex flex-col gap-2 hover:border-white/15 transition-all duration-300"
+            >
+              <div className="flex justify-between items-center">
+                <span className="text-[9px] font-bold text-accent tracking-wider uppercase">{comp.category}</span>
+                <span className="text-xs font-semibold text-neutral-600">0{i + 1}</span>
+              </div>
+              <h4 className="text-base font-bold text-white uppercase tracking-wide">{comp.name}</h4>
+              <p className="text-xs text-neutral-400 font-light leading-relaxed mt-1">{comp.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MobileMaterialsCustomizer({ activeColor, handleColorChange }: { activeColor: typeof colors[0]; handleColorChange: (color: typeof colors[0]) => void }) {
+  return (
+    <section className="relative w-full py-16 px-6 sm:px-8 z-20 bg-black pointer-events-auto">
+      <div className="max-w-2xl mx-auto flex flex-col gap-6 text-center items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0, transition: { duration: 0.8 } }}
+          viewport={{ once: true }}
+          className="flex flex-col items-center animate-fade-in"
+        >
+          <span className="text-[11px] font-bold tracking-[0.25em] text-[#c6a972] uppercase">
+            ALL-DAY COMFORT
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tighter text-white leading-tight mt-3">
+            GRADE 5 TITANIUM.
+          </h2>
+          <p className="text-premium-body text-sm mt-4 px-2">
+            CNC-machined from aerospace-grade titanium with an ultra-lightweight comfort resin inner shell. Designed for 24/7 wear and complete 10 ATM water resistance.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0, transition: { duration: 0.8 } }}
+          viewport={{ once: true }}
+          className="w-full bg-neutral-900/30 border border-white/5 px-6 py-5 rounded-2xl shadow-xl max-w-md"
+        >
+          <p className="text-xs sm:text-sm text-white/90 leading-relaxed font-light">
+            {activeColor.desc}
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0, transition: { duration: 0.8 } }}
+          viewport={{ once: true }}
+          className="flex flex-col items-center gap-3 mt-2"
+        >
+          <div className="flex gap-4 p-2 bg-white/5 backdrop-blur-xl rounded-full border border-white/10 shadow-xl">
+            {colors.map((color) => {
+              const isActive = activeColor.id === color.id;
+              return (
+                <button
+                  key={color.id}
+                  onClick={() => handleColorChange(color)}
+                  className="group relative flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition-all duration-300 hover:scale-105"
+                  style={{ backgroundColor: color.value }}
+                  title={color.name}
+                >
+                  <span
+                    className={`absolute -inset-1.5 rounded-full border-2 transition-all duration-500 scale-90 opacity-0 ${
+                      isActive ? "border-accent scale-100 opacity-100" : "border-white/20 group-hover:scale-95 group-hover:opacity-40"
+                    }`}
+                  />
+                  {isActive && <Check size={14} className="text-black stroke-[3]" />}
+                </button>
+              );
+            })}
+          </div>
+          <span className="text-[10px] sm:text-[11px] font-bold tracking-widest text-accent uppercase mt-1 pl-1">
+            {activeColor.name}
+          </span>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 export default function CinematicLanding() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -77,6 +191,26 @@ export default function CinematicLanding() {
   const [activeColor, setActiveColor] = useState(colors[0]);
   const [currentChapter, setCurrentChapter] = useState(1);
   const [ecgPath, setEcgPath] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const lenisRef = useRef<Lenis | null>(null);
   const currentChapterRef = useRef(1);
@@ -600,7 +734,7 @@ export default function CinematicLanding() {
     // Micro pins connecting chip to PCB
     const pinGeom = new THREE.CylinderGeometry(0.005, 0.005, 0.02, 8);
     const pinMat = new THREE.MeshStandardMaterial({ color: 0x999999, metalness: 0.9 });
-    for (let xOffset of [-0.1, -0.05, 0, 0.05, 0.1]) {
+    for (const xOffset of [-0.1, -0.05, 0, 0.05, 0.1]) {
       const pinLeft = new THREE.Mesh(pinGeom, pinMat);
       pinLeft.position.set(xOffset, -0.04, -0.07);
       pinLeft.rotation.z = Math.PI / 2;
@@ -698,7 +832,7 @@ export default function CinematicLanding() {
       opacity: 1.0,
     });
     const coilGroup = new THREE.Group();
-    for (let yOffset of [-0.07, 0, 0.07]) {
+    for (const yOffset of [-0.07, 0, 0.07]) {
       const coilTorus = new THREE.TorusGeometry(1.408, 0.012, 8, 64);
       const coilMesh = new THREE.Mesh(coilTorus, coilMat);
       coilMesh.rotation.x = Math.PI / 2;
@@ -986,228 +1120,291 @@ export default function CinematicLanding() {
       colorB: colors[0].materialColor & 255,
       roughness: colors[0].roughness,
       metalness: colors[0].metalness,
+      canvasOpacity: 1.0,
     };
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "+=1600%",
-        scrub: 1.8,
-        pin: true,
-      },
-      onUpdate: function() {
-        const time = this.time();
-        let chapter = 1;
-        let particleColor = 0x1F2937;
+    const mm = gsap.matchMedia();
 
-        if (time >= 18.0) {
-          chapter = 10;
-          particleColor = 0x1F2937;
-        } else if (time >= 16.0) {
-          chapter = 9;
-          particleColor = 0xC6A972;
-        } else if (time >= 14.0) {
-          chapter = 8;
-          particleColor = 0x1F2937;
-        } else if (time >= 12.0) {
-          chapter = 7;
-          particleColor = threeStateRef.current.targetColor;
-        } else if (time >= 10.0) {
-          chapter = 6;
-          particleColor = 0x3B82F6;
-        } else if (time >= 8.0) {
-          chapter = 5;
-          particleColor = 0xF59E0B;
-        } else if (time >= 6.0) {
-          chapter = 4;
-          particleColor = 0xEF4444;
-        } else if (time >= 4.0) {
-          chapter = 3;
-          particleColor = 0x3B82F6;
-        } else if (time >= 2.0) {
-          chapter = 2;
-          particleColor = 0x3B82F6;
-        } else {
-          chapter = 1;
-          particleColor = 0x1F2937;
+    // DESKTOP: >= 1024px
+    mm.add("(min-width: 1024px)", () => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "+=1600%",
+          scrub: 1.8,
+          pin: true,
+        },
+        onUpdate: function() {
+          const time = this.time();
+          let chapter = 1;
+          let particleColor = 0x1F2937;
+
+          if (time >= 18.0) {
+            chapter = 10;
+            particleColor = 0x1F2937;
+          } else if (time >= 16.0) {
+            chapter = 9;
+            particleColor = 0xC6A972;
+          } else if (time >= 14.0) {
+            chapter = 8;
+            particleColor = 0x1F2937;
+          } else if (time >= 12.0) {
+            chapter = 7;
+            particleColor = threeStateRef.current.targetColor;
+          } else if (time >= 10.0) {
+            chapter = 6;
+            particleColor = 0x3B82F6;
+          } else if (time >= 8.0) {
+            chapter = 5;
+            particleColor = 0xF59E0B;
+          } else if (time >= 6.0) {
+            chapter = 4;
+            particleColor = 0xEF4444;
+          } else if (time >= 4.0) {
+            chapter = 3;
+            particleColor = 0x3B82F6;
+          } else if (time >= 2.0) {
+            chapter = 2;
+            particleColor = 0x3B82F6;
+          } else {
+            chapter = 1;
+            particleColor = 0x1F2937;
+          }
+
+          threeStateRef.current.targetParticleColor.setHex(particleColor);
+
+          if (chapter !== currentChapterRef.current) {
+            currentChapterRef.current = chapter;
+            setCurrentChapter(chapter);
+          }
         }
+      });
 
-        threeStateRef.current.targetParticleColor.setHex(particleColor);
+      tl.duration(20.0);
 
-        if (chapter !== currentChapterRef.current) {
-          currentChapterRef.current = chapter;
-          setCurrentChapter(chapter);
-        }
-      }
+      // SECTION 1: Cinematic Hero (0 -> 2.0)
+      tl.set(threeStateRef.current, { activeHighlight: "" }, 0.0);
+      tl.to(animState, {
+        ringRotationY: Math.PI * 0.8,
+        ringRotationX: 0.22,
+        ringScale: 0.50,
+        ringPositionX: 0,
+        ringPositionY: -0.82,
+        cameraFOV: 14.5,
+        shellSplit: 0,
+        gasketExpand: 0,
+        pcbExpand: 0,
+        sensorGlow: 0,
+        batteryRotate: 0,
+        coilExpand: 0,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+        ease: "power1.inOut"
+      }, 0);
+
+      // SECTION 2: Engineering Reveal — Exploded View Labels (2.0 -> 4.0)
+      tl.to(animState, {
+        shellSplit: 1.0,
+        gasketExpand: 1.0,
+        pcbExpand: 1.0,
+        sensorGlow: 1.0,
+        batteryRotate: 0,
+        coilExpand: 0,
+        ringRotationX: 0.42,
+        ringRotationY: Math.PI * 2.3,
+        ringScale: 0.48,
+        ringPositionX: 0,
+        ringPositionY: 0,
+        cameraFOV: 16.0,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+        ease: "power2.inOut"
+      }, 2.0);
+
+      tl.set(threeStateRef.current, { activeHighlight: "shell-top" }, 2.0);
+      tl.set(threeStateRef.current, { activeHighlight: "shell-bottom" }, 2.2);
+      tl.set(threeStateRef.current, { activeHighlight: "gasket" }, 2.4);
+      tl.set(threeStateRef.current, { activeHighlight: "pcb" }, 2.6);
+      tl.set(threeStateRef.current, { activeHighlight: "sensors" }, 2.8);
+      tl.set(threeStateRef.current, { activeHighlight: "battery" }, 3.0);
+      tl.set(threeStateRef.current, { activeHighlight: "coil" }, 3.2);
+      tl.set(threeStateRef.current, { activeHighlight: "liner" }, 3.4);
+      tl.set(threeStateRef.current, { activeHighlight: "" }, 3.8);
+
+      // SECTION 3: Engineering Reveal Header (4.0 -> 6.0)
+      tl.to(animState, {
+        ringRotationY: Math.PI * 2.8,
+        ringPositionX: 1.4,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+        ease: "power2.inOut"
+      }, 4.0);
+
+      // SECTION 4: Health Intelligence (6.0 -> 8.0)
+      tl.to(animState, {
+        shellSplit: 0,
+        gasketExpand: 0,
+        pcbExpand: 0,
+        sensorGlow: 0,
+        batteryRotate: 0,
+        coilExpand: 0,
+        ringPositionX: -1.6,
+        ringPositionY: 0,
+        ringScale: 0.44,
+        ringRotationX: 1.2,
+        ringRotationY: Math.PI * 3.5,
+        cameraFOV: 15.0,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+        ease: "power2.inOut"
+      }, 6.0);
+
+      tl.set(threeStateRef.current, { activeHighlight: "", waterMode: 1 }, 6.0);
+
+      // SECTION 5: Battery & Charging (8.0 -> 10.0)
+      tl.to(animState, {
+        ringScale: 0.52,
+        ringPositionX: 1.2,
+        ringPositionY: 0,
+        batteryRotate: 1.0,
+        coilExpand: 1.0,
+        ringRotationX: 0.42,
+        ringRotationY: Math.PI * 5.2,
+        cameraFOV: 15.5,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+        ease: "power2.inOut"
+      }, 8.0);
+
+      tl.set(threeStateRef.current, { activeHighlight: "", waterMode: 0 }, 8.0);
+
+      // SECTION 6: App Connectivity (10.0 -> 12.0)
+      tl.to(animState, {
+        batteryRotate: 0,
+        coilExpand: 0,
+        ringPositionX: -1.4,
+        ringPositionY: 0,
+        ringScale: 0.46,
+        ringRotationX: -0.5,
+        ringRotationY: Math.PI * 6.5,
+        cameraFOV: 15.0,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+        ease: "power2.inOut"
+      }, 10.0);
+
+      tl.set(threeStateRef.current, { activeHighlight: "" }, 10.0);
+
+      // SECTION 7: Premium Materials (12.0 -> 14.0)
+      tl.to(animState, {
+        ringPositionX: 1.0,
+        ringPositionY: -0.25,
+        ringScale: 0.78,
+        ringRotationX: 1.4,
+        ringRotationY: Math.PI * 8.0,
+        cameraFOV: 11.5,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+        ease: "power2.inOut"
+      }, 12.0);
+
+      tl.set(threeStateRef.current, { activeHighlight: "" }, 12.0);
+
+      // SECTION 8: How It Works (14.0 -> 16.0)
+      tl.to(animState, {
+        ringPositionX: 1.2,
+        ringPositionY: 0,
+        ringScale: 0.50,
+        ringRotationX: 0.1,
+        ringRotationY: Math.PI * 9.5,
+        cameraFOV: 14.5,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+        ease: "power2.inOut"
+      }, 14.0);
+
+      // SECTION 9: Reviews (16.0 -> 18.0)
+      tl.to(animState, {
+        ringPositionX: -1.2,
+        ringPositionY: 0,
+        ringScale: 0.50,
+        ringRotationX: 0.2,
+        ringRotationY: Math.PI * 10.5,
+        cameraFOV: 14.5,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+        ease: "power2.inOut"
+      }, 16.0);
+
+      // SECTION 10: FAQ + CTA (18.0 -> 20.0)
+      tl.to(animState, {
+        shellSplit: 0,
+        gasketExpand: 0,
+        pcbExpand: 0,
+        sensorGlow: 0,
+        batteryRotate: 0,
+        coilExpand: 0,
+        ringScale: 0.42,
+        ringPositionX: 0,
+        ringPositionY: 0.8,
+        ringRotationX: 0.32,
+        ringRotationY: Math.PI * 11.5,
+        cameraFOV: 14.0,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+        ease: "power2.inOut"
+      }, 18.0);
+
+      tl.set(threeStateRef.current, { activeHighlight: "" }, 18.0);
     });
 
-    tl.duration(20.0);
+    // MOBILE: < 1024px
+    mm.add("(max-width: 1023px)", () => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1.0,
+        }
+      });
 
-    // SECTION 1: Cinematic Hero (0 -> 2.0)
-    tl.set(threeStateRef.current, { activeHighlight: "" }, 0.0);
-    tl.to(animState, {
-      ringRotationY: Math.PI * 0.8,
-      ringRotationX: 0.22,
-      ringScale: 0.50,
-      ringPositionX: 0,
-      ringPositionY: -0.82,
-      cameraFOV: 14.5,
-      shellSplit: 0,
-      gasketExpand: 0,
-      pcbExpand: 0,
-      sensorGlow: 0,
-      batteryRotate: 0,
-      coilExpand: 0,
-      duration: 2.0,
-      ease: "power1.inOut"
-    }, 0);
+      // Simple rotation as mobile page scrolls
+      tl.to(animState, {
+        ringRotationY: Math.PI * 2.0,
+        ringRotationX: 0.3,
+        ringScale: 0.48,
+        ringPositionX: 0,
+        ringPositionY: 0,
+        cameraFOV: 15.0,
+        shellSplit: 0.0,
+        canvasOpacity: 1.0,
+        duration: 2.0,
+      });
 
-    // SECTION 2: Engineering Reveal — Exploded View Labels (2.0 -> 4.0)
-    tl.to(animState, {
-      shellSplit: 1.0,
-      gasketExpand: 1.0,
-      pcbExpand: 1.0,
-      sensorGlow: 1.0,
-      batteryRotate: 0,
-      coilExpand: 0,
-      ringRotationX: 0.42,
-      ringRotationY: Math.PI * 2.3,
-      ringScale: 0.48,
-      ringPositionX: 0,
-      ringPositionY: 0,
-      cameraFOV: 16.0,
-      duration: 2.0,
-      ease: "power2.inOut"
-    }, 2.0);
+      // Exploded view shown briefly during the scroll
+      tl.to(animState, {
+        shellSplit: 0.8,
+        gasketExpand: 0.8,
+        pcbExpand: 0.8,
+        sensorGlow: 0.8,
+        ringRotationY: Math.PI * 3.5,
+        canvasOpacity: 0.6,
+        duration: 2.5,
+      });
 
-    tl.set(threeStateRef.current, { activeHighlight: "shell-top" }, 2.0);
-    tl.set(threeStateRef.current, { activeHighlight: "shell-bottom" }, 2.2);
-    tl.set(threeStateRef.current, { activeHighlight: "gasket" }, 2.4);
-    tl.set(threeStateRef.current, { activeHighlight: "pcb" }, 2.6);
-    tl.set(threeStateRef.current, { activeHighlight: "sensors" }, 2.8);
-    tl.set(threeStateRef.current, { activeHighlight: "battery" }, 3.0);
-    tl.set(threeStateRef.current, { activeHighlight: "coil" }, 3.2);
-    tl.set(threeStateRef.current, { activeHighlight: "liner" }, 3.4);
-    tl.set(threeStateRef.current, { activeHighlight: "" }, 3.8);
-
-    // SECTION 3: Engineering Reveal Header (4.0 -> 6.0)
-    tl.to(animState, {
-      ringRotationY: Math.PI * 2.8,
-      ringPositionX: 1.4,
-      duration: 2.0,
-      ease: "power2.inOut"
-    }, 4.0);
-
-    // SECTION 4: Health Intelligence (6.0 -> 8.0)
-    tl.to(animState, {
-      shellSplit: 0,
-      gasketExpand: 0,
-      pcbExpand: 0,
-      sensorGlow: 0,
-      batteryRotate: 0,
-      coilExpand: 0,
-      ringPositionX: -1.6,
-      ringPositionY: 0,
-      ringScale: 0.44,
-      ringRotationX: 1.2, // Tilted up to reveal the inside sensors
-      ringRotationY: Math.PI * 3.5,
-      cameraFOV: 15.0,
-      duration: 2.0,
-      ease: "power2.inOut"
-    }, 6.0);
-
-    tl.set(threeStateRef.current, { activeHighlight: "", waterMode: 1 }, 6.0);
-
-    // SECTION 5: Battery & Charging (8.0 -> 10.0)
-    tl.to(animState, {
-      ringScale: 0.52,
-      ringPositionX: 1.2,
-      ringPositionY: 0,
-      batteryRotate: 1.0,
-      coilExpand: 1.0,
-      ringRotationX: 0.42,
-      ringRotationY: Math.PI * 5.2,
-      cameraFOV: 15.5,
-      duration: 2.0,
-      ease: "power2.inOut"
-    }, 8.0);
-
-    tl.set(threeStateRef.current, { activeHighlight: "", waterMode: 0 }, 8.0);
-
-    // SECTION 6: App Connectivity (10.0 -> 12.0)
-    tl.to(animState, {
-      batteryRotate: 0,
-      coilExpand: 0,
-      ringPositionX: -1.4,
-      ringPositionY: 0,
-      ringScale: 0.46,
-      ringRotationX: -0.5, // Tilted back, looking from below
-      ringRotationY: Math.PI * 6.5,
-      cameraFOV: 15.0,
-      duration: 2.0,
-      ease: "power2.inOut"
-    }, 10.0);
-
-    tl.set(threeStateRef.current, { activeHighlight: "" }, 10.0);
-
-    // SECTION 7: Premium Materials (12.0 -> 14.0)
-    tl.to(animState, {
-      ringPositionX: 1.0,
-      ringPositionY: -0.25,
-      ringScale: 0.78,
-      ringRotationX: 1.4, // Dramatic top-down full circle view
-      ringRotationY: Math.PI * 8.0,
-      cameraFOV: 11.5,
-      duration: 2.0,
-      ease: "power2.inOut"
-    }, 12.0);
-
-    tl.set(threeStateRef.current, { activeHighlight: "" }, 12.0);
-
-    // SECTION 8: How It Works (14.0 -> 16.0)
-    tl.to(animState, {
-      ringPositionX: 1.2,
-      ringPositionY: 0,
-      ringScale: 0.50,
-      ringRotationX: 0.1, // Very flat, almost pure edge-on profile
-      ringRotationY: Math.PI * 9.5,
-      cameraFOV: 14.5,
-      duration: 2.0,
-      ease: "power2.inOut"
-    }, 14.0);
-
-    // SECTION 9: Reviews (16.0 -> 18.0)
-    tl.to(animState, {
-      ringPositionX: -1.2,
-      ringPositionY: 0,
-      ringScale: 0.50,
-      ringRotationX: 0.2, 
-      ringRotationY: Math.PI * 10.5,
-      cameraFOV: 14.5,
-      duration: 2.0,
-      ease: "power2.inOut"
-    }, 16.0);
-
-    // SECTION 10: FAQ + CTA (18.0 -> 20.0)
-    tl.to(animState, {
-      shellSplit: 0,
-      gasketExpand: 0,
-      pcbExpand: 0,
-      sensorGlow: 0,
-      batteryRotate: 0,
-      coilExpand: 0,
-      ringScale: 0.42,
-      ringPositionX: 0,
-      ringPositionY: 0.8,
-      ringRotationX: 0.32,
-      ringRotationY: Math.PI * 11.5,
-      cameraFOV: 14.0,
-      duration: 2.0,
-      ease: "power2.inOut"
-    }, 18.0);
-
-    tl.set(threeStateRef.current, { activeHighlight: "" }, 18.0);
+      // Fade out completely as scroll moves further down
+      tl.to(animState, {
+        shellSplit: 0.0,
+        gasketExpand: 0.0,
+        pcbExpand: 0.0,
+        sensorGlow: 0.0,
+        ringScale: 0.1,
+        canvasOpacity: 0.0,
+        duration: 2.0,
+      });
+    });
 
     // --- RENDER LOOP AND PHYSICS EMULATION ---
     const pos = new THREE.Vector3();
@@ -1216,6 +1413,17 @@ export default function CinematicLanding() {
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
       const state = threeStateRef.current;
+
+      // Handle dynamic opacity check and display toggling for performance optimization
+      if (canvasRef.current) {
+        canvasRef.current.style.opacity = animState.canvasOpacity.toString();
+        if (animState.canvasOpacity <= 0.01) {
+          canvasRef.current.style.display = "none";
+          return; // Skip WebGL render loop calculations when not visible
+        } else {
+          canvasRef.current.style.display = "block";
+        }
+      }
 
       // 1. Interactive color interpolation (from refs)
       animState.colorR = THREE.MathUtils.lerp(animState.colorR, state.targetColor >> 16 & 255, 0.05);
@@ -1381,14 +1589,8 @@ export default function CinematicLanding() {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
 
-      // Cleanup GSAP and ScrollTriggers to prevent leaks and fix Next.js back navigation layout breakage
-      if (tl.scrollTrigger) {
-        tl.scrollTrigger.kill(true); // Passing true reverts all DOM changes (pinning, etc.)
-      }
-      tl.kill();
-      ScrollTrigger.getAll().forEach(t => {
-        t.kill(true);
-      });
+      // Revert all GSAP matchMedia timelines and ScrollTriggers
+      mm.revert();
 
       topShellGeom.dispose();
       bottomShellGeom.dispose();
@@ -1458,6 +1660,65 @@ export default function CinematicLanding() {
       );
     }
   };
+
+  if (isMobile) {
+    return (
+      <div ref={containerRef} className="relative w-full bg-black text-white selection:bg-accent selection:text-black min-h-screen">
+        {/* WEBGL CANVAS WRAPPER (Fixed behind content) */}
+        <div className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none z-10">
+          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block will-change-transform" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_15%,rgba(0,0,0,0.96)_85%)] pointer-events-none z-20" />
+          <div
+            className="absolute inset-0 transition-all duration-[2000ms] ease-out pointer-events-none z-0"
+            style={{
+              background: "radial-gradient(circle at center, rgba(31, 41, 55, 0.22) 0%, rgba(0, 0, 0, 1) 80%)"
+            }}
+          />
+        </div>
+
+        {/* MOBILE SECTIONS FLOW */}
+        <div className="relative w-full z-20 flex flex-col pointer-events-auto">
+          <HeroSection currentChapter={currentChapter} isMobile={true} introTextRef={introTextRef} />
+          
+          <EngineeringReveal currentChapter={currentChapter} isMobile={true} explodeTextRef={explodeTextRef} />
+          
+          <MobileComponentsGrid />
+          
+          <HealthIntelligence currentChapter={currentChapter} isMobile={true} />
+          
+          <BatteryCharging currentChapter={currentChapter} isMobile={true} />
+          
+          <AppConnectivity currentChapter={currentChapter} isMobile={true} />
+          
+          <MobileMaterialsCustomizer activeColor={activeColor} handleColorChange={handleColorChange} />
+          
+          <HowItWorks currentChapter={currentChapter} isMobile={true} />
+          
+          <ReviewsOverlay currentChapter={currentChapter} isMobile={true} />
+          
+          <FaqCta currentChapter={currentChapter} isMobile={true} />
+        </div>
+
+        {/* Scroll to Top Button for mobile */}
+        <AnimatePresence>
+          {showScrollTop && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={scrollToTop}
+              className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/60 text-white backdrop-blur-md transition-all duration-300 hover:border-accent hover:text-accent shadow-premium pointer-events-auto cursor-pointer"
+              aria-label="Scroll to top"
+            >
+              <ArrowUp size={20} className="stroke-[2.5]" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="relative w-full bg-black text-white selection:bg-accent selection:text-black h-screen overflow-hidden">
@@ -1820,7 +2081,7 @@ export default function CinematicLanding() {
 
         {/* Scroll to Top Button */}
         <AnimatePresence>
-          {currentChapter > 1 && (
+          {showScrollTop && (
             <motion.button
               initial={{ opacity: 0, scale: 0.8, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
