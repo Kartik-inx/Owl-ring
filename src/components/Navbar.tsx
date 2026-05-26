@@ -69,20 +69,20 @@ const Navbar = () => {
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out px-4 sm:px-6 md:px-12",
-        scrolled ? "py-3 md:py-4" : "py-4 sm:py-6 md:py-8",
+        scrolled ? "py-2 md:py-3" : "py-3 sm:py-4 md:py-6",
         !visible && "max-md:translate-y-[-110%] max-md:opacity-0"
       )}
     >
       <div
         className={cn(
-          "max-w-7xl mx-auto flex items-center justify-between transition-all duration-500 px-4 sm:px-6 py-2 sm:py-3 rounded-full border border-white/5",
+          "max-w-7xl mx-auto flex items-center justify-between transition-all duration-500 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full border border-white/5",
           scrolled ? "glass-dark shadow-premium" : "bg-transparent border-transparent",
           pathname.startsWith("/auth") ? "justify-center" : ""
         )}
       >
         {/* Logo */}
         <Link href="/" className="flex items-center group select-none focus:outline-none">
-          <div className="relative h-10 md:h-12 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+          <div className="relative h-8 md:h-10 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
             <img 
               src="/images/logo.png" 
               alt="Owl Brand Logo" 
