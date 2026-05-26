@@ -17,18 +17,18 @@ const OrderSuccessPage = () => {
           <CheckCircle2 size={40} className="text-accent sm:w-12 sm:h-12" />
         </motion.div>
 
-        <h1 className="text-4xl sm:text-5xl font-bold mb-3 sm:mb-4 tracking-tight uppercase">Order <span className="text-gradient-gold">Confirmed.</span></h1>
-        <p className="text-muted text-sm sm:text-lg mb-8 sm:mb-12 max-w-md mx-auto">
-          Your Owl Ring is being prepared. We've sent the details to your email.
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 tracking-tight uppercase">Order <span className="text-gradient-gold">Confirmed.</span></h1>
+        <p className="text-white/40 text-xs sm:text-sm md:text-base mb-6 sm:mb-8 max-w-md mx-auto font-light">
+          Your Owl Ring is being prepared. We&apos;ve sent the details to your email.
         </p>
 
-        <div className="glass p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] border border-white/5 mb-8 sm:mb-12 text-left">
+        <div className="glass p-5 sm:p-6 rounded-2xl md:rounded-[40px] border border-white/5 mb-6 sm:mb-8 text-left">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <p className="text-[10px] font-bold text-muted uppercase tracking-widest mb-1">Order Number</p>
-              <p className="text-lg sm:text-xl font-bold">#OWL-8291-X</p>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Order Number</p>
+              <p className="text-base sm:text-lg font-bold">#OWL-8291-X</p>
             </div>
-            <button className="flex items-center gap-2 text-[10px] sm:text-xs font-bold text-accent uppercase tracking-widest">
+            <button className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-accent uppercase tracking-widest">
               <Download size={14} />
               Invoice
             </button>
@@ -39,21 +39,21 @@ const OrderSuccessPage = () => {
               <Package size={20} className="text-accent" />
             </div>
             <div className="flex-1">
-              <p className="text-xs sm:text-sm font-bold">Priority Shipping</p>
-              <p className="text-[10px] sm:text-xs text-muted">Estimated arrival: May 18 - May 20</p>
+              <p className="text-xs sm:text-sm font-semibold text-white">Priority Shipping</p>
+              <p className="text-[10px] sm:text-xs text-white/40">Estimated arrival: May 18 - May 20</p>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-          <Link href="/orders/OWL-8291-X" className="flex-1 sm:flex-none">
-            <button className="w-full px-6 sm:px-10 py-4 bg-gold-gradient text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-premium">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full max-w-md mx-auto">
+          <Link href="/orders/OWL-8291-X" className="flex-1">
+            <button className="w-full h-12 bg-gold-gradient text-black font-bold rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-premium text-xs uppercase tracking-wider">
               Track Order
-              <ArrowRight size={18} />
+              <ArrowRight size={16} />
             </button>
           </Link>
-          <Link href="/" className="flex-1 sm:flex-none">
-            <button className="w-full px-6 sm:px-10 py-4 glass text-white font-medium rounded-2xl hover:bg-white/10 transition-colors">
+          <Link href="/" className="flex-1">
+            <button className="w-full h-12 glass text-white font-semibold rounded-xl sm:rounded-2xl hover:bg-white/10 transition-colors text-xs uppercase tracking-wider">
               Continue Shopping
             </button>
           </Link>

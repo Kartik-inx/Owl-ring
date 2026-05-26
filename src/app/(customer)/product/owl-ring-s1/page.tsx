@@ -37,7 +37,7 @@ const ProductDetails = () => {
           <div className="space-y-6">
             <motion.div 
               initial={{ opacity: 1, y: 0 }}
-              className="relative aspect-square rounded-[48px] overflow-hidden glass border border-white/5 flex items-center justify-center group"
+              className="relative aspect-square rounded-3xl md:rounded-[48px] overflow-hidden glass border border-white/5 flex items-center justify-center group"
             >
               <Image
                 src={selectedImage}
@@ -51,13 +51,13 @@ const ProductDetails = () => {
               </div>
             </motion.div>
             
-            <div className="grid grid-cols-5 gap-4">
+            <div className="grid grid-cols-5 gap-2 sm:gap-4">
                {productImages.map((img, idx) => (
                  <div 
                    key={idx} 
                    onClick={() => setSelectedImage(img)}
                    className={cn(
-                     "relative aspect-square rounded-3xl glass border cursor-pointer hover:border-accent transition-colors flex items-center justify-center overflow-hidden",
+                     "relative aspect-square rounded-xl sm:rounded-2xl glass border cursor-pointer hover:border-accent transition-colors flex items-center justify-center overflow-hidden",
                      selectedImage === img ? "border-accent ring-1 ring-accent" : "border-white/5"
                    )}
                  >
@@ -79,8 +79,8 @@ const ProductDetails = () => {
                  </div>
                  <span className="text-xs text-muted font-medium uppercase tracking-widest">{product.reviews} Reviews</span>
               </div>
-              <h1 className="text-5xl font-bold mb-4 tracking-tight">OWL RING <span className="text-gradient-gold">S1</span></h1>
-              <p className="text-2xl font-bold text-accent">${product.colors.find(c => c.name === selectedColor)?.price}</p>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 tracking-tight">OWL RING <span className="text-gradient-gold">S1</span></h1>
+              <p className="text-xl sm:text-2xl font-bold text-accent">${product.colors.find(c => c.name === selectedColor)?.price}</p>
             </div>
 
             <p className="text-muted leading-relaxed">
@@ -132,15 +132,15 @@ const ProductDetails = () => {
             </div>
 
             {/* Quantity and Add to Cart */}
-            <div className="flex gap-4">
-              <div className="flex items-center glass rounded-2xl border border-white/5 px-4">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 text-muted hover:text-white"><Minus size={16} /></button>
-                <span className="w-12 text-center font-bold">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="p-2 text-muted hover:text-white"><Plus size={16} /></button>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex items-center justify-between sm:justify-start glass rounded-2xl border border-white/5 px-4 h-12 sm:h-14">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 text-muted hover:text-white shrink-0"><Minus size={16} /></button>
+                <span className="w-12 text-center font-bold text-sm sm:text-base">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="p-2 text-muted hover:text-white shrink-0"><Plus size={16} /></button>
               </div>
               <Link href="/checkout" className="flex-1">
-                <button className="w-full bg-gold-gradient text-black font-bold py-4 rounded-2xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform shadow-premium glow-hover">
-                  <ShoppingCart size={20} />
+                <button className="w-full h-12 sm:h-14 bg-gold-gradient text-black font-bold rounded-2xl flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform shadow-premium glow-hover text-sm sm:text-base">
+                  <ShoppingCart size={18} />
                   Add to Cart
                 </button>
               </Link>

@@ -14,21 +14,22 @@ const Footer = () => {
   }
 
   const navGroups = {
-    Account: [
-      { name: "Login", href: "/auth/login" },
-      { name: "Sign Up", href: "/auth/signup" },
-      { name: "Profile", href: "/profile" },
-      { name: "My Orders", href: "/orders" },
+    Product: [
+      { name: "The Ring", href: "/product/owl-ring-s1" },
+      { name: "Sizing", href: "/sizing" },
+      { name: "Science", href: "/about" },
+      { name: "Owl App", href: "/" },
     ],
     Support: [
       { name: "FAQ", href: "/support" },
-      { name: "Contact Us", href: "/support" },
-      { name: "Return & Refund Policy", href: "/return-policy" },
+      { name: "Contact", href: "/support" },
+      { name: "Shipping", href: "/shipping" },
+      { name: "Returns", href: "/return-policy" },
     ],
     Company: [
       { name: "About Us", href: "/about" },
-      { name: "Terms & Conditions", href: "/terms" },
-      { name: "Privacy Policy", href: "/privacy-policy" },
+      { name: "Privacy", href: "/privacy-policy" },
+      { name: "Terms", href: "/terms" },
     ],
   };
 
@@ -143,15 +144,15 @@ const Footer = () => {
 
             {/* Brand Statement */}
             <p className="text-white/40 text-[13px] sm:text-sm font-light leading-relaxed max-w-sm text-left tracking-wide">
-              Precision wellness. Quietly integrated. Forged in Grade 5 Titanium for 24/7 intelligent insights.
+              Advancing human potential through elegant, invisible technology. Join the evolution of wellness.
             </p>
 
             {/* Social Links */}
             <div className="flex gap-3">
               <a 
-                href="#" 
+                href="/" 
                 className="w-10 h-10 rounded-full bg-white/[0.01] border border-white/5 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-white/[0.06] hover:border-white/15 hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] group"
-                aria-label="Facebook"
+                aria-label="Website"
               >
                 <svg 
                   viewBox="0 0 24 24" 
@@ -162,31 +163,15 @@ const Footer = () => {
                   strokeLinejoin="round" 
                   className="w-[18px] h-[18px] text-neutral-400 group-hover:text-white transition-colors duration-300"
                 >
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                 </svg>
               </a>
               <a 
-                href="#" 
+                href="mailto:support@owltech.com" 
                 className="w-10 h-10 rounded-full bg-white/[0.01] border border-white/5 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-white/[0.06] hover:border-white/15 hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] group"
-                aria-label="Twitter X"
-              >
-                <svg 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="1.5" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  className="w-[17px] h-[17px] text-neutral-400 group-hover:text-white transition-colors duration-300"
-                >
-                  <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
-                  <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
-                </svg>
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 rounded-full bg-white/[0.01] border border-white/5 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-white/[0.06] hover:border-white/15 hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] group"
-                aria-label="LinkedIn"
+                aria-label="Email"
               >
                 <svg 
                   viewBox="0 0 24 24" 
@@ -197,39 +182,26 @@ const Footer = () => {
                   strokeLinejoin="round" 
                   className="w-[18px] h-[18px] text-neutral-400 group-hover:text-white transition-colors duration-300"
                 >
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                  <rect x="2" y="9" width="4" height="12"/>
-                  <circle cx="4" cy="4" r="2"/>
+                  <rect x="3" y="4" width="18" height="16" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                 </svg>
               </a>
-            </div>
-
-            {/* App Downloads */}
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <a 
-                href="#" 
-                className="flex items-center justify-center gap-3 border border-white/5 hover:border-white/15 bg-white/[0.01] hover:bg-white/[0.05] px-4 py-2.5 rounded-xl transition-all duration-300 group shrink-0 w-full sm:w-[145px]"
+                href="/support" 
+                className="w-10 h-10 rounded-full bg-white/[0.01] border border-white/5 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:bg-white/[0.06] hover:border-white/15 hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] group"
+                aria-label="Support Chat"
               >
-                <svg viewBox="0 0 384 512" fill="currentColor" className="w-[15px] h-[15px] text-white/70 group-hover:text-white transition-colors duration-300">
-                  <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-48.4-19.1-77.5-19.1-38.3 0-77.3 21.6-97 55.7-40.2 69.8-10.2 173.2 28.5 228.6 19 27.2 41.7 57.6 71.3 56.5 28.5-1.1 39.6-18.5 74.3-18.5 34.7 0 45 18.5 74.9 17.8 30.6-.6 50.4-27.6 69.1-55.1 21.8-31.7 30.7-62.6 31.1-64.2-1-1-66.2-25.4-66.4-101zM290.4 83c16.3-20 27.7-47.8 24.7-75.6-23.9 1-52.9 15.9-70.1 35.8-14.7 17.1-27.7 45.3-24.7 72.6 26.8 2.1 54-12.7 70.1-32.8z"/>
+                <svg 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="1.5" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  className="w-[18px] h-[18px] text-neutral-400 group-hover:text-white transition-colors duration-300"
+                >
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
-                <div className="text-left">
-                  <span className="text-[7.5px] uppercase tracking-[0.12em] text-white/40 block leading-none font-medium">Download on the</span>
-                  <span className="text-[11px] font-medium text-white/80 block mt-0.5 group-hover:text-white transition-colors duration-300">App Store</span>
-                </div>
-              </a>
-
-              <a 
-                href="#" 
-                className="flex items-center justify-center gap-3 border border-white/5 hover:border-white/15 bg-white/[0.01] hover:bg-white/[0.05] px-4 py-2.5 rounded-xl transition-all duration-300 group shrink-0 w-full sm:w-[145px]"
-              >
-                <svg viewBox="0 0 512 512" fill="currentColor" className="w-[14px] h-[14px] text-white/70 group-hover:text-white transition-colors duration-300">
-                  <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58-33.2-60.7 60.7 60.7 60.7 58-33.2c15-8.6 24.8-23.6 24.8-40.6s-9.8-32-24.8-40.6zM325.3 277.7l60.1 60.1L104.6 499l220.7-221.3z"/>
-                </svg>
-                <div className="text-left">
-                  <span className="text-[7.5px] uppercase tracking-[0.12em] text-white/40 block leading-none font-medium">Get it on</span>
-                  <span className="text-[11px] font-medium text-white/80 block mt-0.5 group-hover:text-white transition-colors duration-300">Google Play</span>
-                </div>
               </a>
             </div>
           </div>
